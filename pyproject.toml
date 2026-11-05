@@ -21,6 +21,7 @@ dependencies = [
     "ipykernel>=6.29.0",
     "ipywidgets>=8.1.0",
     "jupyterlab>=4.3.0",
+    "scikit-learn>=1.9.1",
 ]
 
 # CUDA 12.8 wheels on Linux/Windows; macOS has no CUDA builds, so it falls back to the
