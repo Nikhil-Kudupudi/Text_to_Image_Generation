@@ -71,14 +71,15 @@ Unzip them into a `data/` folder at the root of the project, so the layout looks
 ```
 data/
 ├── annotations/
-│   └── captions_val2017.json
+│   ├── captions_val2017.json
+│   └── instances_val2017.json
 └── val2017/
     ├── 000000000139.jpg
     └── ... (5,000 images)
 ```
 
-Only `captions_val2017.json` and the `val2017` images are used. The other annotation files in the zip
-can be deleted.
+Only `captions_val2017.json`, `instances_val2017.json` (object categories, used to check the subset's
+category balance) and the `val2017` images are used. The other annotation files in the zip can be deleted.
 
 ### 5. Run the notebook
 
