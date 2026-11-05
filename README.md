@@ -81,10 +81,19 @@ data/
 Only `captions_val2017.json`, `instances_val2017.json` (object categories, used to check the subset's
 category balance) and the `val2017` images are used. The other annotation files in the zip can be deleted.
 
-### 5. Run the notebook
+### 5. Run the notebooks
 
-Open the notebook from `src/notebooks/` in VS Code or JupyterLab and select the project's `.venv` as
-the kernel, then run the cells in order.
+Open the notebooks from `src/notebooks/` in VS Code or JupyterLab, select the project's `.venv` as the
+kernel, and run them **in order**. Each one reads what the previous one wrote.
+
+| Notebook | What it does | Writes | Time on Apple M5* |
+|---|---|---|---|
+| `01_data_preparation.ipynb` | Audits and cleans the COCO captions, filters images, picks 4,000 image–caption pairs, splits 80/10/10 by image, resizes and center-crops to 512×512 | `data/processed/pairs.parquet`, `captions.parquet`, `images_512/`, `cleaning_report.json` | ~30 s |
+| `02_text_embeddings.ipynb` | Encodes the captions with CLIP ViT-L/14 (Stable Diffusion's text encoder) and BERT, then sanity-checks them with similarity, Recall@K and t-SNE | `data/processed/embeddings/*.pt`, `embedding_report.json` | ~7 min |
+| `03_baseline_generation.ipynb` | Feeds the saved CLIP embeddings to Stable Diffusion v1.5 to generate the 5 sample prompt → image runs, scored with CLIP | `outputs/milestone1_samples/` | ~3 min |
+
+\* Excluding the one-time model downloads (CLIP ~1.7 GB, BERT ~0.4 GB, Stable Diffusion v1.5 ~5 GB),
+which Hugging Face caches for later runs. The notebooks pick the device automatically: CUDA, Apple MPS or CPU.
 
 To start JupyterLab from the terminal:
 
@@ -92,18 +101,26 @@ To start JupyterLab from the terminal:
 uv run jupyter lab
 ```
 
-The first run downloads the model weights from Hugging Face (about 5 GB) and caches them, so later runs
-start much faster. Everything the notebook produces is written to `data/processed/` and `outputs/`,
-both of which are git-ignored.
+To re-run a notebook end to end from the terminal (outputs are saved into the notebook):
+
+```bash
+uv run jupyter nbconvert --to notebook --execute --inplace src/notebooks/01_data_preparation.ipynb
+```
+
+All processing is seeded, so re-running gives the same dataset and splits. Everything the notebooks
+produce is written to `data/processed/` and `outputs/`, both of which are git-ignored. The figures are
+also embedded in the committed notebooks.
 
 ## Project layout
 
 ```
 data/                      # dataset (not in git) and generated artefacts
+├── val2017/, annotations/ #   raw COCO 2017 val
+└── processed/             #   cleaned pairs, 512×512 images, embeddings
 docs/                      # milestone notes
-outputs/                   # generated images
-src/notebooks/             # the notebooks
-pyproject.toml             # dependencies
+outputs/                   # generated images and figures (not in git)
+src/notebooks/             # the notebooks (01 → 02 → 03)
+pyproject.toml             # dependencies (uv.lock pins exact versions)
 ```
 
 ## Documentation
