@@ -111,3 +111,6 @@ Each stage of the project is documented in the `docs/` folder:
 
 - [docs/milestone_1.md](docs/milestone_1.md) — project setup and dataset preparation: goals, tasks and
   deliverables for the first stage.
+
+
+  #update readme
