@@ -95,6 +95,11 @@ kernel, and run them **in order**. Each one reads what the previous one wrote.
 \* Excluding the one-time model downloads (CLIP ~1.7 GB, BERT ~0.4 GB, Stable Diffusion v1.5 ~5 GB),
 which Hugging Face caches for later runs. The notebooks pick the device automatically: CUDA, Apple MPS or CPU.
 
+`milestone_1_hemanth.ipynb` is a standalone alternative to the 01 → 02 pipeline: it curates 2,000
+image–caption pairs by CLIP score (best caption per image), encodes them with CLIP ViT-L/14 and BERT,
+checks retrieval and caption similarity, and wraps the result in a training-ready PyTorch `Dataset`.
+It writes only to `data/processed/hemanth/` and `outputs/hemanth/` (~6 min on an 8 GB Apple-silicon Mac).
+
 To start JupyterLab from the terminal:
 
 ```bash
