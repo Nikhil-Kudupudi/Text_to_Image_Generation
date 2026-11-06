@@ -23,9 +23,15 @@ dependencies = [
     "jupyterlab>=4.3.0",
 ]
 
+# CUDA wheels on Linux/Windows; macOS has no CUDA build, so it falls back to the
+# standard PyPI wheels (CPU + Apple-silicon MPS).
 [tool.uv.sources]
-torch = { index = "pytorch-cu128" }
-torchvision = { index = "pytorch-cu128" }
+torch = [
+    { index = "pytorch-cu128", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+torchvision = [
+    { index = "pytorch-cu128", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
 
 [[tool.uv.index]]
 name = "pytorch-cu128"

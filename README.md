@@ -11,6 +11,8 @@ and BERT, and generates images with Stable Diffusion v1.5.
 - [uv](https://docs.astral.sh/uv/) for dependency management
 - About 10 GB of free disk space for the dataset and model weights
 - A GPU is recommended but not required — everything runs on CPU, just more slowly
+- On Linux/Windows `uv sync` installs the CUDA 12.8 build of PyTorch; on macOS it installs the standard
+  build, which uses the Apple-silicon GPU (MPS) automatically
 
 ## Setup
 
@@ -82,7 +84,14 @@ can be deleted.
 
 ### 5. Run the notebook
 
-Open the notebook from `src/notebooks/` in VS Code or JupyterLab and select the project's `.venv` as
+Notebooks in `src/notebooks/`:
+
+- `milestone_1.ipynb` — team baseline: cleaning, CLIP/BERT embeddings, sanity checks, 5 SD test runs
+- `milestone_1_hemanth.ipynb` — CLIP-score-curated 2,000-pair subset, CLIP-L/BERT embeddings,
+  retrieval checks and a training-ready PyTorch `Dataset` (writes to `data/processed/hemanth/` and
+  `outputs/hemanth/`)
+
+Open a notebook from `src/notebooks/` in VS Code or JupyterLab and select the project's `.venv` as
 the kernel, then run the cells in order.
 
 To start JupyterLab from the terminal:
