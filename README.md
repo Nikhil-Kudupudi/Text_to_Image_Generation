@@ -144,3 +144,5 @@ Each stage of the project is documented in the `docs/` folder:
   deliverables for the first stage.
 - [docs/milestone_1_artifacts.md](docs/milestone_1_artifacts.md) — what milestone 1 leaves on disk and
   which later stage consumes it.
+- [docs/milestone_2.md](docs/milestone_2.md) — conditional generation and tuning: the three generation
+  arms, the guidance and noise-schedule sweep, and what was excluded from the comparison.
