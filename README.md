@@ -30,9 +30,9 @@ all three at once and a single `encode_text` would shadow the other two.
 
 On Kaggle everything written lands under **`/kaggle/working/`** — artefacts in
 `/kaggle/working/outputs/` (plots, tables, generated images, the sweep) and milestone 1's data in
-`/kaggle/working/data/`. Nothing is written to `/kaggle/input/`, which is read-only. The setup cell
-searches all of `/kaggle/input` for the Dataset, however deeply it is nested, so a path like
-`/kaggle/input/datasets/<owner>/<slug>/processed/` is found automatically.
+The Dataset is read **in place** from `/kaggle/input/`: nothing is ever written under it, so there
+is no copy. The setup cell searches all of `/kaggle/input` for it, however deeply it is nested, so a
+path like `/kaggle/input/datasets/<owner>/<slug>/processed/` is found automatically.
 
 Off Kaggle, paths stay relative to the working directory (`./data/`, `./outputs/`).
 
@@ -43,8 +43,8 @@ Off Kaggle, paths stay relative to the working directory (`./data/`, `./outputs/
 3. For any milestone 2 notebook, attach milestone 1's output as a Dataset — see below.
 4. Run all.
 
-The setup cell finds whichever attached Dataset contains `processed/pairs.parquet` and copies it
-somewhere writable. If nothing is attached it stops and names what it did see.
+The setup cell finds whichever attached Dataset contains `processed/pairs.parquet` and reads it
+where it sits. If nothing is attached it stops and names what it did see.
 
 ### What to upload as a Dataset
 
