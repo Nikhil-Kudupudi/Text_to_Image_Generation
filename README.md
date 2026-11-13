@@ -13,7 +13,7 @@ For the normal repository layout — `src/modules/`, the test suite, the impleme
 
 | Notebook | What it produces | Needs |
 |---|---|---|
-| `notebooks/milestone_1.ipynb` | the curated subset, CLIP + BERT embeddings, sanity checks | COCO val2017 + annotations |
+| `notebooks/combined_milestone_1.ipynb` | the curated subset, CLIP + BERT embeddings, sanity checks | COCO val2017 + annotations |
 | `notebooks/milestone_2_sd15.ipynb` | `prompt_embeds` integration, baseline, CFG + sampler + noise-schedule sweep, DDPM illustration | milestone 1's `data/processed/` |
 | `notebooks/milestone_2_encoders.ipynb` | CLIP vs BERT vs GPT-2 sibling-gap comparison, no generation | milestone 1's `data/processed/` |
 | `notebooks/milestone_2_comparison.ipynb` | SD 1.5 vs aMUSEd vs LDM-BERT — transformer-only against diffusion | the above, plus ~7 GB of weights |
@@ -28,8 +28,14 @@ They are written as real files rather than pasted into the notebook's own namesp
 `describe`, so flattening them together would silently shadow two of the three — and the encoders
 notebook uses all three at once.
 
-`config.py` anchors every path to the **working directory**, so artefacts land in `./data/` and
-`./outputs/` — `/kaggle/working/...` on Kaggle, which is writable.
+On Kaggle everything written lands under **`/kaggle/working/`** — artefacts in
+`/kaggle/working/outputs/` (plots, tables, generated images, the sweep) and milestone 1's data in
+`/kaggle/working/data/`. Nothing is written to `/kaggle/input/`, which is read-only. Section 0
+searches all of `/kaggle/input` for the Dataset, however deeply it is nested, so a path like
+`/kaggle/input/datasets/<owner>/<slug>/processed/` is found automatically; set `DATA_SOURCE` at the
+top of that cell to override it.
+
+Off Kaggle, paths stay relative to the working directory (`./data/`, `./outputs/`).
 
 ## Running on Kaggle
 
@@ -76,7 +82,7 @@ which roughly halves the sweep.
 ## Running on Colab
 
 Upload the notebook and pick a GPU runtime. `/content` is writable, so section 0 does nothing
-special — but Colab has no Datasets, so run `milestone_1.ipynb` first in the same session (it
+special — but Colab has no Datasets, so run `combined_milestone_1.ipynb` first in the same session (it
 downloads ~1 GB of COCO) before any milestone 2 notebook.
 
 ## Running locally
