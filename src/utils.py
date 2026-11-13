@@ -40,13 +40,18 @@ def rel(path):
 
     Falls back to a computed relative path instead of raising when the path sits
     outside the root -- which happens on Kaggle, where the data and the code live
-    on different mounts.
+    on different mounts -- and to the absolute path when even that is impossible,
+    as on Windows when the two are on different drives.
     """
     p = Path(path)
     try:
         return p.relative_to(cfg.PROJECT_ROOT).as_posix()
     except ValueError:
+        pass
+    try:
         return Path(os.path.relpath(p, cfg.PROJECT_ROOT)).as_posix()
+    except ValueError:
+        return p.as_posix()
 
 
 def save_fig(fig, name):
