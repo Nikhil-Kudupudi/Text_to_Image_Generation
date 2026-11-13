@@ -24,6 +24,7 @@ import inspect
 import torch
 from diffusers import (
     DDIMScheduler,
+    DDPMScheduler,
     DPMSolverMultistepScheduler,
     EulerAncestralDiscreteScheduler,
     EulerDiscreteScheduler,
@@ -43,6 +44,9 @@ SCHEDULER_CLASSES = {
     "euler_a": EulerAncestralDiscreteScheduler,
     "dpmpp": DPMSolverMultistepScheduler,
     "unipc": UniPCMultistepScheduler,
+    # Not in cfg.SAMPLERS on purpose: ~1000 steps is 100x the cost of DPMSolver++ for a
+    # worse image, so DDPM is a two-prompt illustration rather than a sweep arm.
+    "ddpm": DDPMScheduler,
 }
 
 SCHEDULER_DEFAULTS = {

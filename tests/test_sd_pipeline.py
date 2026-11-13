@@ -24,7 +24,13 @@ _STUBS = {"ddim": _StubScheduler, "euler": _StubScheduler}
 
 
 def test_registry_covers_every_configured_sampler():
-    assert set(sd_pipeline.SCHEDULER_CLASSES) == set(cfg.SAMPLERS)
+    assert set(sd_pipeline.SCHEDULER_CLASSES) >= set(cfg.SAMPLERS)
+
+
+def test_ddpm_is_available_but_is_not_a_sweep_arm():
+    """The 1000-step illustration needs the registry; it must not join the sweep."""
+    assert "ddpm" in sd_pipeline.SCHEDULER_CLASSES
+    assert "ddpm" not in cfg.SAMPLERS
 
 
 def test_karras_is_kept_only_where_the_scheduler_accepts_it():
