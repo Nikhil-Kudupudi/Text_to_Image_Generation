@@ -1,148 +1,112 @@
-# Text-to-Image Generation
+# Text-to-Image Generation — standalone notebooks
 
-Generating images from text using Transformer text encoders and diffusion models.
+Generating images from text with Transformer text encoders and diffusion models, on COCO 2017
+captions.
 
-The pipeline pairs COCO 2017 captions with their images, cleans the captions, encodes them with CLIP
-and BERT, and generates images with Stable Diffusion v1.5.
+**This branch is the Kaggle/Colab upload.** Each notebook is self-contained: there is no `src/`
+package, nothing to clone, nothing to install in editable mode. Upload a single `.ipynb` and run it.
 
-## Requirements
+For the normal repository layout — `src/modules/`, the test suite, the implementation plan — see the
+`feat-milestone-2` branch.
 
-- Python 3.11 – 3.13
-- [uv](https://docs.astral.sh/uv/) for dependency management
-- About 10 GB of free disk space for the dataset and model weights
-- A GPU is recommended but not required — everything runs on CPU, just more slowly
+## The notebooks
 
-## Setup
+| Notebook | What it produces | Needs |
+|---|---|---|
+| `notebooks/milestone_1.ipynb` | the curated subset, CLIP + BERT embeddings, sanity checks | COCO val2017 + annotations |
+| `notebooks/milestone_2_sd15.ipynb` | `prompt_embeds` integration, baseline, CFG + sampler + noise-schedule sweep, DDPM illustration | milestone 1's `data/processed/` |
+| `notebooks/milestone_2_encoders.ipynb` | CLIP vs BERT vs GPT-2 sibling-gap comparison, no generation | milestone 1's `data/processed/` |
+| `notebooks/milestone_2_comparison.ipynb` | SD 1.5 vs aMUSEd vs LDM-BERT — transformer-only against diffusion | the above, plus ~7 GB of weights |
 
-### 1. Install uv
+## How a notebook is self-contained
 
-macOS / Linux:
+Section 0 writes the project's modules to disk beside the notebook, then imports them normally. The
+code is byte-identical to the tested version on `feat-milestone-2`.
 
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
+They are written as real files rather than pasted into the notebook's own namespace on purpose:
+`clip_embeddings`, `bert_embeddings` and `gpt2_embeddings` each define `load`, `encode_text` and
+`describe`, so flattening them together would silently shadow two of the three — and the encoders
+notebook uses all three at once.
+
+`config.py` anchors every path to the **working directory**, so artefacts land in `./data/` and
+`./outputs/` — `/kaggle/working/...` on Kaggle, which is writable.
+
+## Running on Kaggle
+
+1. **New Notebook → File → Import Notebook**, and pick the `.ipynb` you want.
+2. **Settings → Accelerator → GPU** (T4 or P100).
+3. For any milestone 2 notebook, attach milestone 1's output as a Dataset — see below.
+4. Run all.
+
+Section 0 finds whichever attached Dataset contains `processed/pairs.parquet`, copies it somewhere
+writable and points `config.py` at it. If nothing is attached it says so, and names what it did see.
+
+### What to upload as a Dataset
+
+Upload **`data/processed/` only** — about 390 MB. Not `data/val2017/` or `data/annotations/`
+(1.6 GB between them); no milestone 2 notebook reads raw COCO.
+
+| Inside `data/processed/` | Size | Needed |
+|---|---|---|
+| `images_512/` | 323 MB | yes — the real-photo CLIP reference the generated scores are read against |
+| `pairs.parquet`, `pairs.csv`, `metadata.json` | 2 MB | yes |
+| `embeddings/` | 66 MB | optional; the encoders notebook recomputes them |
+
+To run **milestone 1** on Kaggle instead, do not upload COCO — attach one of the public "COCO 2017"
+Datasets already hosted there.
+
+### Internet toggle
+
+Off by default, and enabling it needs phone verification.
+
+- **On** — `from_pretrained` downloads what it needs. Simplest.
+- **Off** — attach the Stable Diffusion 1.5 snapshot as a second Dataset and point `HF_HOME` at it.
+  `milestone_2_comparison.ipynb` additionally needs aMUSEd and LDM-BERT, roughly 7 GB more.
+
+### On a T4
+
+`GEN_BATCH_SIZE` is 4, sized for an 8 GB laptop GPU. A T4 has 16 GB, so after the import cell:
+
+```python
+cfg.GEN_BATCH_SIZE = 8
 ```
 
-Windows (PowerShell):
+which roughly halves the sweep.
 
-```powershell
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-```
+## Running on Colab
 
-### 2. Install the dependencies
+Upload the notebook and pick a GPU runtime. `/content` is writable, so section 0 does nothing
+special — but Colab has no Datasets, so run `milestone_1.ipynb` first in the same session (it
+downloads ~1 GB of COCO) before any milestone 2 notebook.
+
+## Running locally
 
 ```bash
 uv sync
-```
-
-This reads `pyproject.toml`, resolves the exact versions in `uv.lock` and creates a `.venv` folder in
-the project with everything installed.
-
-### 3. Activate the environment
-
-macOS / Linux:
-
-```bash
-source .venv/bin/activate
-```
-
-Windows (PowerShell):
-
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
-Windows (Command Prompt):
-
-```cmd
-.venv\Scripts\activate.bat
-```
-
-You can skip this step if you prefix commands with `uv run` instead, for example `uv run python ...`.
-
-### 4. Download the dataset
-
-The project uses the **COCO 2017 validation split**. Download these two files:
-
-- [val2017.zip](http://images.cocodataset.org/zips/val2017.zip) — 5,000 images (~780 MB)
-- [annotations_trainval2017.zip](http://images.cocodataset.org/annotations/annotations_trainval2017.zip) — captions (~240 MB)
-
-Unzip them into a `data/` folder at the root of the project, so the layout looks like this:
-
-```
-data/
-├── annotations/
-│   └── captions_val2017.json
-└── val2017/
-    ├── 000000000139.jpg
-    └── ... (5,000 images)
-```
-
-Only `captions_val2017.json` and the `val2017` images are used. The other annotation files in the zip
-can be deleted.
-
-### 5. Run the notebook
-
-Open **`src/notebooks/milestone_one_reorganized.ipynb`** in VS Code or JupyterLab, select the project's
-`.venv` as the kernel, and run the cells in order. It finds `src/` on its own, so it does not matter
-which directory the kernel started in.
-
-`src/notebooks/combined_milestone_1.ipynb` is the original single-file version of the same pipeline,
-kept for reference. The two produce identical artefacts.
-
-To start JupyterLab from the terminal:
-
-```bash
 uv run jupyter lab
 ```
 
-The first run downloads the model weights from Hugging Face (about 5 GB) and caches them, so later runs
-start much faster. Everything the notebook produces is written to `data/processed/` and `outputs/`,
-both of which are git-ignored.
+Section 0 writes `config.py`, `utils.py` and `modules/` into whatever directory the kernel started
+in, so run the notebooks from a scratch folder if you would rather those files did not appear beside
+them.
 
-## Project layout
+## Hardware
 
-```
-data/                      # dataset (not in git) and generated artefacts
-docs/                      # milestone notes
-outputs/                   # figures, tables and generated images (not in git)
-src/
-├── config.py              # every tunable value and every path -- start here
-├── utils.py               # seeding, saving figures and tables
-├── modules/               # the reusable pipeline stages
-│   ├── data_preprocessing.py   # caption cleaning, subset construction, image preprocessing
-│   ├── clip_embeddings.py      # CLIP text and image encoders
-│   ├── bert_embeddings.py      # BERT text encoder
-│   ├── storage.py              # manifest, .npy arrays, metadata, caching
-│   └── sanity_checks.py        # shape health, retrieval, sibling agreement, neighbours
-└── notebooks/             # the notebooks
-pyproject.toml             # dependencies
+Measured on an RTX 5060 Laptop GPU (8 GB, `sm_120`): peak **2.62 GB**, about **2.5 s** per 512 px
+image at 20 steps, and the full sweep in roughly 12 minutes.
+
+Blackwell cards (RTX 50-series) need CUDA 12.8 or newer; older PyTorch wheels fail with "no kernel
+image available". To check:
+
+```bash
+python -c "import torch; print(torch.cuda.get_device_capability(0), torch.cuda.get_arch_list())"
 ```
 
-**To change anything about a run** — subset size, caption filters, model names, generation steps and
-guidance, where artefacts land — edit `src/config.py`, restart the kernel and re-run. No other file
-holds a number that matters.
-
-### Running on Kaggle
-
-`config.py` reads three environment variables, so the same notebook runs unchanged on a Kaggle T4:
-
-```python
-import os
-os.environ["T2I_DATA_DIR"] = "/kaggle/input/<your-dataset>"
-os.environ["T2I_OUTPUT_DIR"] = "/kaggle/working/outputs"
-```
-
-Put them in a cell **above the one that runs `import config as cfg`**, since the paths are resolved when
-that module is first imported. With the internet toggle off, attach the model snapshot and
-`data/processed/` as Kaggle Datasets rather than letting `from_pretrained` download them.
+The capability tuple must appear in the arch list — `(12, 0)` means `sm_120` has to be there.
 
 ## Documentation
 
-Each stage of the project is documented in the `docs/` folder:
-
-- [docs/milestone_1.md](docs/milestone_1.md) — project setup and dataset preparation: goals, tasks and
-  deliverables for the first stage.
-- [docs/milestone_1_artifacts.md](docs/milestone_1_artifacts.md) — what milestone 1 leaves on disk and
-  which later stage consumes it.
-- [docs/milestone_2.md](docs/milestone_2.md) — conditional generation and tuning: the three generation
-  arms, the guidance and noise-schedule sweep, and what was excluded from the comparison.
+- [docs/milestone_1.md](docs/milestone_1.md) — project setup and dataset preparation.
+- [docs/milestone_1_artifacts.md](docs/milestone_1_artifacts.md) — what milestone 1 leaves on disk.
+- [docs/milestone_2.md](docs/milestone_2.md) — conditional generation and tuning: the generation
+  arms, the guidance and noise-schedule sweep, and what was excluded.
