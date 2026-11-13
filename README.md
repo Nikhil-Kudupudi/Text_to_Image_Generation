@@ -176,13 +176,38 @@ Put them in a cell **above the one that runs `import config as cfg`**, since the
 that module is first imported. With the internet toggle off, attach the model snapshot and
 `data/processed/` as Kaggle Datasets rather than letting `from_pretrained` download them.
 
-**The milestone 2 notebooks do this for you.** Each opens with a *Kaggle setup* cell that no-ops off
-Kaggle and, on Kaggle, finds whichever attached dataset contains milestone 1's `processed/` output,
-copies it to `/kaggle/working/data` and points `config.py` there. The copy is not optional —
-`/kaggle/input` is read-only and `cfg.ensure_dirs()` creates directories under `DATA_DIR`. If no
-attached dataset has `processed/pairs.parquet`, the cell stops with a message naming what it did see.
+**The milestone 2 notebooks handle this for you.** Each opens with a *Paths on a hosted runtime*
+cell that does nothing on a normal checkout and, on Kaggle, takes whichever of these two routes
+applies.
 
-Two things still need doing by hand on a T4:
+### Route A — clone the repo
+
+Works on **Colab** and on Kaggle with the internet toggle on:
+
+```bash
+!git clone https://github.com/Nikhil-Kudupudi/Text_to_Image_Generation.git
+!pip -q install "diffusers>=0.31" "transformers>=4.46" accelerate safetensors ftfy scipy
+```
+
+The clone lands somewhere writable (`/content/...` or `/kaggle/working/...`), so no paths need
+redirecting and the setup cell stays out of the way. **But the repository is code only** — `data/`
+is git-ignored — so you must run `milestone_one_reorganized.ipynb` first in the same session to
+download COCO and build `data/processed/`. Budget ~1 GB of download and the milestone 1 runtime
+before milestone 2 can start.
+
+### Route B — attach milestone 1's output as a Dataset
+
+The faster route, and the only one that works with the internet toggle **off**. Upload
+`data/processed/` (~390 MB: the manifest, the embeddings and the 512px photo cache) as a Kaggle
+Dataset and attach it. The setup cell finds whichever attached dataset holds
+`processed/pairs.parquet`, copies it to `/kaggle/working/data` and points `config.py` there. The
+copy is not optional — `/kaggle/input` is read-only and `cfg.ensure_dirs()` creates directories
+under `DATA_DIR`.
+
+If neither route applies — nothing attached *and* the code sitting somewhere read-only — the cell
+stops with a message naming both fixes and listing what it did see.
+
+### Either way, on a T4
 
 ```python
 cfg.GEN_BATCH_SIZE = 8   # right after `import config as cfg`; 4 is sized for an 8 GB laptop
