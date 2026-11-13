@@ -38,7 +38,10 @@ GENERATIONS_DIR = OUTPUT_DIR / "generations"       # generated PNGs
 PLOTS_DIR = OUTPUT_DIR / "plots"                   # every figure, as PNG
 TABLES_DIR = OUTPUT_DIR / "tables"                 # every summary table, as JSON
 
-ALL_DIRS = (PROCESSED_DIR, IMAGES_512_DIR, EMB_DIR, GENERATIONS_DIR, PLOTS_DIR, TABLES_DIR)
+SWEEP_DIR = OUTPUT_DIR / "sweep"                   # one sub-directory per swept config
+
+ALL_DIRS = (PROCESSED_DIR, IMAGES_512_DIR, EMB_DIR, GENERATIONS_DIR, PLOTS_DIR, TABLES_DIR,
+            SWEEP_DIR)
 
 
 def ensure_dirs():
@@ -95,3 +98,39 @@ RUN_SD_GENERATION = True    # section 11 needs ~4 GB of Stable Diffusion weights
 N_ALIGN_IMAGES = 500        # images put through CLIP's vision tower for the retrieval check
 REUSE_EXISTING = True       # reuse cached embeddings when they match this run's subset
 FORCE_RECOMPUTE = False     # set True to ignore every cache and redo all work
+
+
+# ---- Milestone 2: the sweep ---------------------------------------------
+N_FIXED_PROMPTS = 10   # every config generates this same set, from the same latents
+LATENT_SEED = SEED     # latents are built once, on CPU, and passed into every run
+
+CFG_GRID = (1.0, 4.0, 7.5, 11.0, 15.0)   # spec sweeps 1-15; 7.5 is the SD 1.5 default
+GUIDANCE_RESCALE = 0.7                   # corrects the oversaturation CFG > 12 causes
+
+# Sampler -> step count. The counts differ on purpose: DPMSolver++ and UniPC reach at
+# 20 steps what PNDM needs 50 for, so an equal-step comparison would measure nothing
+# but the step count.
+SAMPLERS = {
+    "pndm": 50,      # SD 1.5 default -- the baseline
+    "ddim": 50,      # deterministic at eta=0
+    "lms": 30,       # multistep; needs scipy
+    "euler": 30,
+    "euler_a": 30,   # ancestral -- adds noise each step, never converges
+    "dpmpp": 20,
+    "unipc": 20,
+}
+
+# Noise-schedule axes. Swept as a product against one fixed sampler, so the only
+# variable is the schedule.
+TIMESTEP_SPACINGS = ("leading", "trailing", "linspace")
+ZERO_SNR_OPTIONS = (False, True)
+KARRAS_OPTIONS = (False, True)
+SCHEDULE_SAMPLER = "dpmpp"
+
+DDPM_STEPS = 1000      # the illustration, not a sweep arm
+DDPM_N_PROMPTS = 2
+
+# Batch 4, not the 8 an unshared 16 GB T4 allows: this targets an 8 GB RTX 5060 Laptop
+# GPU that is also driving the display. SD 1.5 in fp16 is ~2.5 GB of weights and roughly
+# 0.6 GB of activations per 512x512 image.
+GEN_BATCH_SIZE = 4

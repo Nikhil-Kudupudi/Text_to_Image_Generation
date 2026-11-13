@@ -25,6 +25,11 @@ dependencies = [
     "scipy>=1.17.1",
 ]
 
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+]
+
 # CUDA 12.8 wheels on Linux/Windows; macOS has no CUDA builds, so it falls back to the
 # default PyPI wheels, which include Apple Silicon (MPS) support.
 [tool.uv.sources]
