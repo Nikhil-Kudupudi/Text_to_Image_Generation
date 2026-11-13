@@ -617,3 +617,43 @@ git commit -m "feat: add milestone 2 SD 1.5 notebook"
 - [ ] **Step 4: Run it, confirm it passes.**
 - [ ] **Step 5: Write `milestone_2_comparison.ipynb`** — the same 10 prompts through SD 1.5, LDM-BERT (256 px) and aMUSEd, one CLIP-score table, one comparison grid.
 - [ ] **Step 6: Commit.**
+
+---
+
+## Execution record
+
+Executed inline on branch `feat-milestone-2` (14 commits off `main` @ 384318a), 88 CPU-only
+tests, verified on an RTX 5060 Laptop GPU (8 GB, sm_120): integration `max|diff|` 3.05e-02,
+CLIP(txt,gen) 0.3447 against the real photos' 0.3070, peak 2.62 GB.
+
+Two real bugs were found and fixed during execution, both invisible to a casual check:
+
+1. **The attention mask.** `conditioning.encode_prompts` passed one; the pipeline does not.
+   CLIP's text tower is causal, so real tokens were bit-identical and only the padded
+   positions moved — by ~30 on a scale of 33 — and the UNet cross-attends to all 77.
+   Measured cost: CLIP(txt,gen) 0.2302 instead of 0.3447. The brief's own task-1 snippet
+   (`clip_embeddings.encode_sequence`) reproduces this bug; that function now warns.
+2. **`pipe.enable_vae_slicing()`** was removed in diffusers 0.42; the call now probes.
+
+### Deferred review findings
+
+A fresh whole-branch review returned 0 Critical and 6 Important (all fixed, see the `fix:`
+commit). These Minor items were deliberately left:
+
+| # | Finding |
+|---|---|
+| 1 | `sd_pipeline.free()`'s `del obj` drops the loop variable, not the caller's reference; the docstring overstates it |
+| 2 | `free()` moving an fp16 pipe to CPU makes diffusers log a false "cannot run with cpu device" warning 3x |
+| 3 | `recording.save_run` sits inside `run_sweep`'s `try`, so a disk error discards an already-computed score |
+| 4 | The CFG 15.0 point also switches `guidance_rescale` to 0.7, so the last plot point moves two knobs (spec-directed) |
+| 5 | `set_verbosity_error()` also silences CLIP's ">77 tokens, truncated" warning |
+| 6 | `test_conditioning`'s shape assertions are determined by the stub tokenizer, not by production |
+| 7 | `test_conditioning` uses `torch.equal` where real BLAS gives ~4e-6 between identical rows |
+| 8 | The GPT-2 `mean_pool` test exercises the `bert_embeddings` re-export, not new code |
+| 9 | No real-signature guard for `AmusedPipeline` / `LDMTextToImagePipeline`, unlike the one for the slicing API |
+| 10 | `arms` calls `enable_memory_savers` unguarded on CPU, where `load_sd` guards on `cuda` |
+| 11 | `set_scheduler`'s `base_config=None` default is the config-drift path; every caller passes it, but nothing warns |
+| 12 | `recording.save_run` raises `TypeError` on a string `out_dir` (needs a `Path()` coercion) |
+| 13 | LDM-BERT is a diffusion model, so fixed latents *do* transfer to it; only aMUSEd is genuinely exempt |
+| 14 | aMUSEd is loaded without `variant="fp16"`, roughly doubling that download |
+| 15 | The sweep's `scorer` re-encodes the same 10 real photographs on every config (~240 redundant encodes) |
