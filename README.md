@@ -82,8 +82,12 @@ can be deleted.
 
 ### 5. Run the notebook
 
-Open the notebook from `src/notebooks/` in VS Code or JupyterLab and select the project's `.venv` as
-the kernel, then run the cells in order.
+Open **`src/notebooks/milestone_one_reorganized.ipynb`** in VS Code or JupyterLab, select the project's
+`.venv` as the kernel, and run the cells in order. It finds `src/` on its own, so it does not matter
+which directory the kernel started in.
+
+`src/notebooks/combined_milestone_1.ipynb` is the original single-file version of the same pipeline,
+kept for reference. The two produce identical artefacts.
 
 To start JupyterLab from the terminal:
 
@@ -100,10 +104,37 @@ both of which are git-ignored.
 ```
 data/                      # dataset (not in git) and generated artefacts
 docs/                      # milestone notes
-outputs/                   # generated images
-src/notebooks/             # the notebooks
+outputs/                   # figures, tables and generated images (not in git)
+src/
+├── config.py              # every tunable value and every path -- start here
+├── utils.py               # seeding, saving figures and tables
+├── modules/               # the reusable pipeline stages
+│   ├── data_preprocessing.py   # caption cleaning, subset construction, image preprocessing
+│   ├── clip_embeddings.py      # CLIP text and image encoders
+│   ├── bert_embeddings.py      # BERT text encoder
+│   ├── storage.py              # manifest, .npy arrays, metadata, caching
+│   └── sanity_checks.py        # shape health, retrieval, sibling agreement, neighbours
+└── notebooks/             # the notebooks
 pyproject.toml             # dependencies
 ```
+
+**To change anything about a run** — subset size, caption filters, model names, generation steps and
+guidance, where artefacts land — edit `src/config.py`, restart the kernel and re-run. No other file
+holds a number that matters.
+
+### Running on Kaggle
+
+`config.py` reads three environment variables, so the same notebook runs unchanged on a Kaggle T4:
+
+```python
+import os
+os.environ["T2I_DATA_DIR"] = "/kaggle/input/<your-dataset>"
+os.environ["T2I_OUTPUT_DIR"] = "/kaggle/working/outputs"
+```
+
+Put them in a cell **above the one that runs `import config as cfg`**, since the paths are resolved when
+that module is first imported. With the internet toggle off, attach the model snapshot and
+`data/processed/` as Kaggle Datasets rather than letting `from_pretrained` download them.
 
 ## Documentation
 
@@ -111,6 +142,5 @@ Each stage of the project is documented in the `docs/` folder:
 
 - [docs/milestone_1.md](docs/milestone_1.md) — project setup and dataset preparation: goals, tasks and
   deliverables for the first stage.
-
-
-  #update readme
+- [docs/milestone_1_artifacts.md](docs/milestone_1_artifacts.md) — what milestone 1 leaves on disk and
+  which later stage consumes it.
