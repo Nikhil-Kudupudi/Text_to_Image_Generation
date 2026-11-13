@@ -176,6 +176,21 @@ Put them in a cell **above the one that runs `import config as cfg`**, since the
 that module is first imported. With the internet toggle off, attach the model snapshot and
 `data/processed/` as Kaggle Datasets rather than letting `from_pretrained` download them.
 
+**The milestone 2 notebooks do this for you.** Each opens with a *Kaggle setup* cell that no-ops off
+Kaggle and, on Kaggle, finds whichever attached dataset contains milestone 1's `processed/` output,
+copies it to `/kaggle/working/data` and points `config.py` there. The copy is not optional —
+`/kaggle/input` is read-only and `cfg.ensure_dirs()` creates directories under `DATA_DIR`. If no
+attached dataset has `processed/pairs.parquet`, the cell stops with a message naming what it did see.
+
+Two things still need doing by hand on a T4:
+
+```python
+cfg.GEN_BATCH_SIZE = 8   # right after `import config as cfg`; 4 is sized for an 8 GB laptop
+```
+
+and `milestone_2_comparison.ipynb` pulls ~7 GB of aMUSEd and LDM-BERT weights, so it needs a session
+with the internet toggle on, or those weights attached as a second dataset with `HF_HOME` set to it.
+
 ## Documentation
 
 Each stage of the project is documented in the `docs/` folder:
