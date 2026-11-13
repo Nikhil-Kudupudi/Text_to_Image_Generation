@@ -4,15 +4,19 @@
 dict, so a config is hashable -- the sweep puts them in sets and uses `label` as a
 directory name, and a mutable config would let two runs share an identity.
 
-`generate` is the only place the pipeline is called, and it is called with
+`generate` is the only place the *sweep* calls the pipeline, and it is called with
 `prompt_embeds=` and never `prompt=`: that is the milestone's integration
-requirement, enforced in one place rather than trusted across a notebook.
+requirement, enforced in one place rather than trusted across a notebook. Two places
+use `prompt=` on purpose and say so -- the integration check, which exists to compare
+the two paths, and the cross-arm comparison, where each arm brings its own encoder.
 
 Batching exists for the 8 GB budget. Latents are sliced alongside the embeddings so
 prompt *i* keeps its own noise no matter where the batch boundary falls.
 """
 
 from dataclasses import dataclass, field
+
+import torch
 
 import config as cfg
 from . import sd_pipeline
@@ -53,20 +57,35 @@ def batches(n, size):
     return [slice(i, min(i + size, n)) for i in range(0, n, size)]
 
 
+def prompt_generators(n, seed=None):
+    """One seeded CPU generator per prompt.
+
+    Pre-generated latents pin where a run *starts*; they do nothing about the noise
+    ancestral samplers (Euler-a) and DDPM draw inside the denoising loop, which
+    otherwise comes from the global device RNG and so depends on everything that ran
+    before it in the kernel. One generator per prompt rather than one per batch, so a
+    prompt's noise does not change when the batch size does.
+    """
+    seed = cfg.LATENT_SEED if seed is None else seed
+    return [torch.Generator(device="cpu").manual_seed(seed + i) for i in range(n)]
+
+
 def generate(pipe, prompt_embeds, negative_embeds, latents, config, base_config=None,
-             batch_size=None, **pipe_kwargs):
+             batch_size=None, seed=None, **pipe_kwargs):
     """Render one image per row of `prompt_embeds`. Returns a list of PIL images."""
     batch_size = cfg.GEN_BATCH_SIZE if batch_size is None else batch_size
     sd_pipeline.set_scheduler(pipe, config.sampler, base_config=base_config,
                               **dict(config.scheduler_kwargs))
 
     device, dtype = pipe.device, pipe.dtype
+    generators = prompt_generators(len(prompt_embeds), seed)
     images = []
     for part in batches(len(prompt_embeds), batch_size):
         out = pipe(
             prompt_embeds=prompt_embeds[part].to(device=device, dtype=dtype),
             negative_prompt_embeds=negative_embeds[part].to(device=device, dtype=dtype),
             latents=latents[part].to(device=device, dtype=dtype),
+            generator=generators[part],
             num_inference_steps=config.steps,
             guidance_scale=config.guidance,
             guidance_rescale=config.guidance_rescale,

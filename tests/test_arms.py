@@ -3,6 +3,7 @@ from types import SimpleNamespace
 import pytest
 from PIL import Image
 
+import config as cfg
 from modules import arms
 
 
@@ -56,8 +57,28 @@ def test_a_pipeline_declaring_var_kwargs_still_only_gets_named_parameters():
 
 def test_the_prompts_reach_the_pipeline_unchanged():
     pipe = _NamedPipe()
-    arms.run_arm(pipe, ["a dog", "a cat"])
+    arms.run_arm(pipe, ["a dog", "a cat"], batch_size=8)
     assert pipe.calls[0]["prompt"] == ["a dog", "a cat"]
+
+
+def test_run_arm_batches_so_ten_512px_prompts_do_not_land_in_one_call():
+    """SD at 512 with CFG is an effective UNet batch of 2n; 10 at once will not fit 8 GB."""
+    pipe = _NamedPipe()
+    images = arms.run_arm(pipe, [f"p{i}" for i in range(10)], batch_size=4)
+    assert len(images) == 10
+    assert [len(call["prompt"]) for call in pipe.calls] == [4, 4, 2]
+
+
+def test_run_arm_defaults_to_the_configured_batch_size():
+    pipe = _NamedPipe()
+    arms.run_arm(pipe, [f"p{i}" for i in range(cfg.GEN_BATCH_SIZE + 1)])
+    assert len(pipe.calls) == 2
+
+
+def test_batching_keeps_the_prompt_order():
+    pipe = _NamedPipe()
+    arms.run_arm(pipe, [f"p{i}" for i in range(7)], batch_size=3)
+    assert [p for call in pipe.calls for p in call["prompt"]] == [f"p{i}" for i in range(7)]
 
 
 def test_an_unknown_arm_name_fails_loudly():

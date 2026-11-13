@@ -8,9 +8,13 @@ Two checkpoints, doing two different jobs:
                             text -> image retrieval check possible.
   `clip-vit-large-patch14`  the exact text encoder Stable Diffusion v1.5 is
                             conditioned on. Its 77 x 768 per-token states are the
-                            tensors the UNet cross-attends to -- no substitutes,
-                            because a pretrained UNet only understands the space
-                            it was trained in.
+                            same *kind* of tensor the UNet cross-attends to -- no
+                            substitutes, because a pretrained UNet only understands
+                            the space it was trained in.
+
+**`encode_sequence` here is for analysis, not for conditioning.** It passes an
+attention mask, which the pipeline deliberately does not; see the warning on that
+function. To build `prompt_embeds`, use `conditioning.encode_prompts`.
 
 The conditioning tensor is one vector per token, not one per sentence, because
 the generator reads the prompt token by token. That is how "a *red* bus" colours
@@ -115,6 +119,16 @@ def load_sd_text_encoder(model_name=None, device=None, dtype=None):
 @torch.no_grad()
 def encode_sequence(texts, tokenizer, model, batch_size=None, max_tokens=None, device=None):
     """Per-token hidden states (N, 77, 768) plus the pooled EOS vector (N, 768).
+
+    **Do not feed the sequence tensor to a pipeline as `prompt_embeds`.** This passes
+    an attention mask; Stable Diffusion's own `encode_prompt` does not. CLIP's text
+    tower is causal, so the mask leaves every real token bit-identical -- the pooled
+    vector this returns is unaffected, which is why it is fine for the analysis it was
+    written for -- but it moves every padded position by ~30 on a scale of 33, and the
+    UNet cross-attends to all 77. Images come out different and measurably worse
+    (CLIP score 0.23 against 0.34) with nothing raising an error.
+
+    Use `conditioning.encode_prompts` for conditioning.
 
     The sequence tensor comes back as float16 -- it is ~710 MB at 6,000 captions
     in float32, and halving it costs nothing we can measure downstream.

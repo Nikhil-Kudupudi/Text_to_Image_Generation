@@ -81,6 +81,44 @@ def test_each_prompt_keeps_its_own_latent_across_batch_boundaries():
     assert embeds.tolist() == list(range(10))
 
 
+def test_each_prompt_gets_its_own_seeded_cpu_generator():
+    """Euler-a and DDPM draw noise mid-loop; without this they use the global RNG.
+
+    Pre-generated latents pin only the start. One generator per prompt means a prompt's
+    mid-loop noise does not depend on which batch it landed in.
+    """
+    pipe = _Pipe()
+    generation.generate(
+        pipe, _ramp(10, 77, 768), _ramp(10, 77, 768), _ramp(10, 4, 64, 64),
+        generation.GenConfig("euler_a", 30, 7.5), base_config=BASE, batch_size=4)
+    gens = [g for call in pipe.calls for g in call["generator"]]
+    assert len(gens) == 10
+    assert all(g.device.type == "cpu" for g in gens)
+    assert len({g.initial_seed() for g in gens}) == 10
+
+
+def test_the_generator_seeds_do_not_depend_on_the_batch_size():
+    def seeds(batch_size):
+        pipe = _Pipe()
+        generation.generate(
+            pipe, _ramp(10, 77, 768), _ramp(10, 77, 768), _ramp(10, 4, 64, 64),
+            generation.GenConfig("euler_a", 30, 7.5), base_config=BASE, batch_size=batch_size)
+        return [g.initial_seed() for call in pipe.calls for g in call["generator"]]
+
+    assert seeds(4) == seeds(10) == seeds(3)
+
+
+def test_two_runs_of_the_same_config_use_the_same_seeds():
+    def seeds():
+        pipe = _Pipe()
+        generation.generate(
+            pipe, _ramp(4, 77, 768), _ramp(4, 77, 768), _ramp(4, 4, 64, 64),
+            generation.GenConfig("euler_a", 30, 7.5), base_config=BASE)
+        return [g.initial_seed() for call in pipe.calls for g in call["generator"]]
+
+    assert seeds() == seeds()
+
+
 def test_the_pipeline_is_never_given_a_raw_prompt():
     pipe = _Pipe()
     generation.generate(

@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import torch
 from PIL import Image
 
@@ -51,6 +52,23 @@ def test_sampler_grid_uses_each_samplers_own_step_count():
     assert {c.sampler: c.steps for c in sweep.sampler_configs()} == dict(cfg.SAMPLERS)
 
 
+def test_sampler_grid_pins_timestep_spacing_so_only_the_sampler_varies():
+    """SD 1.5's config omits timestep_spacing, so each class would pick its own default.
+
+    PNDM and DDIM default to `leading` while LMS/Euler/DPM++/UniPC default to `linspace`,
+    which would confound the sampler comparison with an axis the schedule grid sweeps.
+    """
+    spacings = {dict(c.scheduler_kwargs).get("timestep_spacing")
+                for c in sweep.sampler_configs()}
+    assert spacings == {cfg.BASE_TIMESTEP_SPACING}
+
+
+def test_guidance_grid_pins_the_same_spacing_as_the_sampler_grid():
+    spacings = {dict(c.scheduler_kwargs).get("timestep_spacing")
+                for c in sweep.guidance_configs()}
+    assert spacings == {cfg.BASE_TIMESTEP_SPACING}
+
+
 def test_schedule_grid_covers_every_combination_with_unique_labels():
     configs = sweep.schedule_configs()
     expected = len(cfg.TIMESTEP_SPACINGS) * len(cfg.ZERO_SNR_OPTIONS) * len(cfg.KARRAS_OPTIONS)
@@ -88,10 +106,30 @@ def test_a_failing_config_is_recorded_and_the_sweep_continues(tmp_path):
     assert "out of memory" in df.loc[1, "error"]
 
 
+def test_each_row_reaches_disk_before_the_next_config_starts(tmp_path):
+    """The point of the flush: a kernel death on config k must leave 0..k-1 readable.
+
+    Asserting only that the CSV exists at the end would pass even with the write moved
+    outside the loop, so this reads the file from inside each generate call.
+    """
+    rows_on_disk = []
+
+    def spy(pipe, pe, ne, lat, config, **kw):
+        path = tmp_path / "sweep_results.csv"
+        rows_on_disk.append(len(pd.read_csv(path)) if path.is_file() else 0)
+        return _images(len(pe))
+
+    sweep.run_sweep(None, _three_configs(), **_args(), scorer=_scorer,
+                    out_dir=tmp_path, base_config=BASE, generate_fn=spy)
+    assert rows_on_disk == [0, 1, 2]
+
+
 def test_rows_survive_on_disk_when_a_later_config_fails(tmp_path):
     sweep.run_sweep(None, _three_configs(), **_args(), scorer=_scorer,
                     out_dir=tmp_path, base_config=BASE, generate_fn=_raises_on_second)
-    assert (tmp_path / "sweep_results.csv").is_file()
+    written = pd.read_csv(tmp_path / "sweep_results.csv")
+    assert len(written) == 3
+    assert written["status"].tolist() == ["ok", "error", "ok"]
 
 
 def test_images_are_written_per_config(tmp_path):

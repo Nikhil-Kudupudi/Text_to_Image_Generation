@@ -24,7 +24,7 @@ import inspect
 from diffusers import AmusedPipeline, LDMTextToImagePipeline
 
 import config as cfg
-from . import sd_pipeline
+from . import generation, sd_pipeline
 
 ARMS = {
     "amused": {
@@ -79,6 +79,18 @@ def accepted_kwargs(pipe, kwargs):
     return {k: v for k, v in kwargs.items() if k in named}
 
 
-def run_arm(pipe, prompts, **kwargs):
-    """Generate one image per prompt, passing only what this pipeline accepts."""
-    return pipe(prompt=list(prompts), **accepted_kwargs(pipe, kwargs)).images
+def run_arm(pipe, prompts, batch_size=None, **kwargs):
+    """Generate one image per prompt, passing only what this pipeline accepts.
+
+    Batched for the same reason `generation.generate` is: classifier-free guidance
+    doubles the effective UNet batch, so ten 512px prompts in one call is twenty, which
+    does not fit alongside the weights on an 8 GB card.
+    """
+    batch_size = cfg.GEN_BATCH_SIZE if batch_size is None else batch_size
+    accepted = accepted_kwargs(pipe, kwargs)
+    prompts = list(prompts)
+
+    images = []
+    for part in generation.batches(len(prompts), batch_size):
+        images.extend(pipe(prompt=prompts[part], **accepted).images)
+    return images

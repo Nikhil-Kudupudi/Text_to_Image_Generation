@@ -124,6 +124,11 @@ SAMPLERS = {
 
 # Noise-schedule axes. Swept as a product against one fixed sampler, so the only
 # variable is the schedule.
+# SD 1.5's shipped scheduler config omits timestep_spacing, so each scheduler class would
+# fall back to its own default -- PNDM and DDIM to "leading", the rest to "linspace". The
+# guidance and sampler grids pin it so that axis stays still while the schedule grid sweeps it.
+BASE_TIMESTEP_SPACING = "leading"   # SD legacy, what v1.5 was trained under
+
 TIMESTEP_SPACINGS = ("leading", "trailing", "linspace")
 ZERO_SNR_OPTIONS = (False, True)
 KARRAS_OPTIONS = (False, True)

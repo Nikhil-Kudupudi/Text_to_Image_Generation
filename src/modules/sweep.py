@@ -30,6 +30,10 @@ COLUMNS = [
 ]
 
 
+def _pinned_spacing():
+    return (("timestep_spacing", cfg.BASE_TIMESTEP_SPACING),)
+
+
 def guidance_configs(sampler="pndm", values=None, steps=None, rescale_above=12.0):
     """CFG swept at one sampler.
 
@@ -41,16 +45,23 @@ def guidance_configs(sampler="pndm", values=None, steps=None, rescale_above=12.0
     return [
         generation.GenConfig(
             sampler, steps, g,
-            guidance_rescale=cfg.GUIDANCE_RESCALE if g > rescale_above else 0.0)
+            guidance_rescale=cfg.GUIDANCE_RESCALE if g > rescale_above else 0.0,
+            scheduler_kwargs=_pinned_spacing())
         for g in values
     ]
 
 
 def sampler_configs(guidance=None, samplers=None):
-    """Every sampler at one guidance scale, each at its own step count."""
+    """Every sampler at one guidance scale, each at its own step count.
+
+    `timestep_spacing` is pinned rather than left to each scheduler class's default,
+    which would otherwise put PNDM and DDIM on `leading` and the other five on
+    `linspace` -- confounding the comparison with an axis the schedule grid sweeps.
+    """
     guidance = cfg.GUIDANCE if guidance is None else guidance
     samplers = cfg.SAMPLERS if samplers is None else samplers
-    return [generation.GenConfig(name, steps, guidance) for name, steps in samplers.items()]
+    return [generation.GenConfig(name, steps, guidance, scheduler_kwargs=_pinned_spacing())
+            for name, steps in samplers.items()]
 
 
 def schedule_configs(sampler=None, guidance=None, steps=None):
