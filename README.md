@@ -20,20 +20,19 @@ For the normal repository layout — `src/modules/`, the test suite, the impleme
 
 ## How a notebook is self-contained
 
-Section 0 writes the project's modules to disk beside the notebook, then imports them normally. The
-code is byte-identical to the tested version on `feat-milestone-2`.
+Plain code cells, top to bottom. No `%%` magics, no files written beside the notebook, nothing
+imported from this repository — each notebook defines the handful of functions it needs, where it
+needs them.
 
-They are written as real files rather than pasted into the notebook's own namespace on purpose:
-`clip_embeddings`, `bert_embeddings` and `gpt2_embeddings` each define `load`, `encode_text` and
-`describe`, so flattening them together would silently shadow two of the three — and the encoders
-notebook uses all three at once.
+Where the same idea appears in more than one encoder the functions are named apart
+(`encode_clip_text`, `encode_bert_text`, `encode_gpt2_text`), because the encoders notebook uses
+all three at once and a single `encode_text` would shadow the other two.
 
 On Kaggle everything written lands under **`/kaggle/working/`** — artefacts in
 `/kaggle/working/outputs/` (plots, tables, generated images, the sweep) and milestone 1's data in
-`/kaggle/working/data/`. Nothing is written to `/kaggle/input/`, which is read-only. Section 0
+`/kaggle/working/data/`. Nothing is written to `/kaggle/input/`, which is read-only. The setup cell
 searches all of `/kaggle/input` for the Dataset, however deeply it is nested, so a path like
-`/kaggle/input/datasets/<owner>/<slug>/processed/` is found automatically; set `DATA_SOURCE` at the
-top of that cell to override it.
+`/kaggle/input/datasets/<owner>/<slug>/processed/` is found automatically.
 
 Off Kaggle, paths stay relative to the working directory (`./data/`, `./outputs/`).
 
@@ -44,8 +43,8 @@ Off Kaggle, paths stay relative to the working directory (`./data/`, `./outputs/
 3. For any milestone 2 notebook, attach milestone 1's output as a Dataset — see below.
 4. Run all.
 
-Section 0 finds whichever attached Dataset contains `processed/pairs.parquet`, copies it somewhere
-writable and points `config.py` at it. If nothing is attached it says so, and names what it did see.
+The setup cell finds whichever attached Dataset contains `processed/pairs.parquet` and copies it
+somewhere writable. If nothing is attached it stops and names what it did see.
 
 ### What to upload as a Dataset
 
@@ -71,19 +70,19 @@ Off by default, and enabling it needs phone verification.
 
 ### On a T4
 
-`GEN_BATCH_SIZE` is 4, sized for an 8 GB laptop GPU. A T4 has 16 GB, so after the import cell:
+`BATCH_SIZE` is 4, sized for an 8 GB laptop GPU. A T4 has 16 GB, so edit the settings cell:
 
 ```python
-cfg.GEN_BATCH_SIZE = 8
+BATCH_SIZE = 8
 ```
 
 which roughly halves the sweep.
 
 ## Running on Colab
 
-Upload the notebook and pick a GPU runtime. `/content` is writable, so section 0 does nothing
-special — but Colab has no Datasets, so run `combined_milestone_1.ipynb` first in the same session (it
-downloads ~1 GB of COCO) before any milestone 2 notebook.
+Upload the notebook and pick a GPU runtime. `/content` is writable, so the setup cell does nothing
+special — but Colab has no Datasets, so run `combined_milestone_1.ipynb` first in the same session
+(it downloads ~1 GB of COCO) before any milestone 2 notebook.
 
 ## Running locally
 
@@ -92,9 +91,7 @@ uv sync
 uv run jupyter lab
 ```
 
-Section 0 writes `config.py`, `utils.py` and `modules/` into whatever directory the kernel started
-in, so run the notebooks from a scratch folder if you would rather those files did not appear beside
-them.
+Artefacts land in `./data/` and `./outputs/` relative to wherever the kernel started.
 
 ## Hardware
 
