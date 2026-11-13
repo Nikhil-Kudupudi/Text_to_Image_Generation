@@ -81,6 +81,20 @@ def set_scheduler(pipe, name, base_config=None, scheduler_classes=None, **overri
     return pipe
 
 
+def enable_memory_savers(pipe):
+    """Turn on the slicing an 8 GB card wants, using whichever API this version has.
+
+    diffusers 0.42 removed the pipeline-level `enable_vae_slicing()` wrapper and left
+    the method on the VAE itself, so both are probed rather than assumed.
+    """
+    if hasattr(pipe, "enable_attention_slicing"):
+        pipe.enable_attention_slicing()
+    vae = getattr(pipe, "vae", None)
+    if hasattr(vae, "enable_slicing"):
+        vae.enable_slicing()
+    return pipe
+
+
 def load_sd(repo_candidates=None, device=None, dtype=None, slicing=True):
     """Load SD 1.5. Returns `(pipe, repo_id, base_scheduler_config)`.
 
@@ -105,8 +119,7 @@ def load_sd(repo_candidates=None, device=None, dtype=None, slicing=True):
         pipe = pipe.to(device)
         pipe.set_progress_bar_config(disable=True)
         if slicing and device.type == "cuda":
-            pipe.enable_attention_slicing()
-            pipe.enable_vae_slicing()
+            enable_memory_savers(pipe)
         return pipe, repo, dict(pipe.scheduler.config)
 
     raise RuntimeError("no Stable Diffusion repo could be loaded: " + repr(errors))

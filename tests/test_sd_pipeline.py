@@ -1,3 +1,5 @@
+from types import SimpleNamespace
+
 import pytest
 
 import config as cfg
@@ -74,3 +76,34 @@ def test_an_unknown_sampler_name_fails_loudly():
 def test_vram_report_works_without_a_gpu():
     report = sd_pipeline.vram_report()
     assert "device" in report
+
+
+class _MemPipe:
+    """Shaped like diffusers 0.42: VAE slicing lives on the VAE, not the pipeline."""
+
+    def __init__(self):
+        self.calls = []
+        self.vae = SimpleNamespace(enable_slicing=lambda: self.calls.append("vae_slicing"))
+
+    def enable_attention_slicing(self):
+        self.calls.append("attention_slicing")
+
+
+def test_memory_savers_use_the_api_this_diffusers_version_has():
+    pipe = _MemPipe()
+    sd_pipeline.enable_memory_savers(pipe)
+    assert pipe.calls == ["attention_slicing", "vae_slicing"]
+
+
+def test_memory_savers_skip_what_a_pipeline_does_not_offer():
+    pipe = _MemPipe()
+    del pipe.vae
+    sd_pipeline.enable_memory_savers(pipe)
+    assert pipe.calls == ["attention_slicing"]
+
+
+def test_the_real_pipeline_still_exposes_what_the_savers_call():
+    """Guards the next diffusers bump: 0.42 already removed pipe.enable_vae_slicing()."""
+    from diffusers import AutoencoderKL, StableDiffusionPipeline
+    assert hasattr(StableDiffusionPipeline, "enable_attention_slicing")
+    assert hasattr(AutoencoderKL, "enable_slicing")

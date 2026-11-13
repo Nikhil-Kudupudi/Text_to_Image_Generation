@@ -1,3 +1,5 @@
+from types import SimpleNamespace
+
 import torch
 
 import config as cfg
@@ -33,7 +35,12 @@ class _Out:
 class _Enc:
     dtype = torch.float32
 
+    def __init__(self, use_attention_mask=False):
+        self.config = SimpleNamespace(use_attention_mask=use_attention_mask)
+        self.masks = []
+
     def __call__(self, input_ids=None, attention_mask=None):
+        self.masks.append(attention_mask)
         return _Out(input_ids.unsqueeze(-1).expand(-1, -1, 768).float())
 
 
@@ -66,6 +73,23 @@ def test_a_per_prompt_negative_list_is_used_as_given():
     pos, neg = conditioning.conditioning_pair(
         ["aa", "bbb"], _Tok(), _Enc(), negative=["x", "yyyyy"])
     assert not torch.equal(neg[0], neg[1])
+
+
+def test_clip_is_called_without_an_attention_mask():
+    """SD attends to all 77 positions, and masking changes every padded one.
+
+    CLIP's text tower is causal, so the mask leaves real tokens untouched but moves
+    the padding states by ~30 on a scale of 33 -- and the UNet reads those too.
+    """
+    encoder = _Enc()
+    conditioning.encode_prompts(["a dog"], _Tok(), encoder)
+    assert encoder.masks == [None]
+
+
+def test_an_encoder_that_asks_for_the_mask_still_gets_it():
+    encoder = _Enc(use_attention_mask=True)
+    conditioning.encode_prompts(["a dog"], _Tok(), encoder)
+    assert encoder.masks[0] is not None
 
 
 def test_max_abs_difference_is_zero_for_identical_tensors():

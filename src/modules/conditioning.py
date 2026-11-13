@@ -10,8 +10,15 @@ position, which is how "a *red* bus" colours the bus rather than tinting the who
 frame. The pooled vector would throw that structure away.
 
 Verifying it worked is `max_abs_difference` against the same prompt run the normal
-way. Expect *near*-identical rather than bit-identical -- milestone 1 encodes in
-float32 and the pipeline runs float16.
+way. Expect *near*-identical rather than bit-identical -- this encodes in float32 and
+the pipeline runs float16.
+
+One trap, and it is the reason this is not three lines in a notebook: the text encoder
+must be called **without an attention mask**. The milestone brief's own sketch reaches
+for `clip_embeddings.encode_sequence`, which passes one. CLIP's text tower is causal,
+so the mask leaves every real token bit-identical and only moves the padded positions
+-- which is exactly why the mistake survives a casual check, and exactly why it still
+changes the picture, since the UNet cross-attends to all 77 positions.
 
 The same code path is what a BERT->CLIP adapter would plug into, which is why it is
 a module rather than three lines in a notebook.
@@ -37,7 +44,15 @@ def encode_prompts(prompts, tokenizer, text_encoder, device=None, dtype=None):
         truncation=True, return_tensors="pt",
     ).to(device)
 
-    hidden = text_encoder(**tokens).last_hidden_state
+    # No attention mask for CLIP, which is what the pipeline itself does. CLIP's text
+    # tower is causal, so masking leaves the real tokens untouched -- but it moves every
+    # padded position by ~30 on a scale of 33, and the UNet cross-attends to all 77.
+    # Passing the mask here produces a different image from the same prompt.
+    wants_mask = getattr(getattr(text_encoder, "config", None), "use_attention_mask", False)
+    attention_mask = tokens["attention_mask"] if wants_mask else None
+
+    hidden = text_encoder(input_ids=tokens["input_ids"],
+                          attention_mask=attention_mask).last_hidden_state
     return hidden.to(dtype) if dtype is not None else hidden
 
 
