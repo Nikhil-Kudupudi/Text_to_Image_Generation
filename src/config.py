@@ -64,6 +64,7 @@ MIN_CHARS, MAX_CHARS = 10, 250
 CLIP_JOINT_MODEL = "openai/clip-vit-base-patch32"    # text + vision towers -> shared 512-d space
 CLIP_SD_MODEL = "openai/clip-vit-large-patch14"      # the text encoder SD v1.5 is conditioned on
 BERT_MODEL = "google-bert/bert-base-uncased"         # text-only Transformer, for comparison
+GPT2_MODEL = "openai-community/gpt2"                 # autoregressive encoder, milestone 2's optional arm
 SD_REPO_CANDIDATES = [                               # tried in order; the original runwayml repo is gone
     "stable-diffusion-v1-5/stable-diffusion-v1-5",
     "sd-legacy/stable-diffusion-v1-5",
@@ -72,6 +73,7 @@ SD_REPO_CANDIDATES = [                               # tried in order; the origi
 
 CLIP_MAX_TOKENS = 77   # fixed by CLIP's positional embedding table
 BERT_MAX_TOKENS = 64   # COCO captions are short; 64 covers them with room to spare
+GPT2_MAX_TOKENS = 64   # matched to BERT so the encoder comparison varies only the model
 BATCH_SIZE = 64
 
 # ---- Generation (section 11; the knobs milestone 2 sweeps) -------------

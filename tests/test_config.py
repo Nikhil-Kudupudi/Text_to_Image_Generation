@@ -24,3 +24,8 @@ def test_fixed_prompt_and_latent_settings():
 
 def test_sweep_directory_is_created_with_the_others():
     assert cfg.SWEEP_DIR in cfg.ALL_DIRS
+
+
+def test_gpt2_is_measured_on_the_same_footing_as_bert():
+    assert cfg.GPT2_MODEL
+    assert cfg.GPT2_MAX_TOKENS == cfg.BERT_MAX_TOKENS
