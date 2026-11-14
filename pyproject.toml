@@ -23,6 +23,7 @@ dependencies = [
     "jupyterlab>=4.3.0",
     "scikit-learn>=1.9.1",
     "scipy>=1.17.1",
+    "kaggle>=2.2.5",
 ]
 
 # CUDA 12.8 wheels on Linux/Windows; macOS has no CUDA builds, so it falls back to the
