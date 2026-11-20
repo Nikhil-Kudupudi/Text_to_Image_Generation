@@ -1,0 +1,98 @@
+9.6s 1 0.00s - Debugger warning: It seems that frozen modules are being used, which may
+9.6s 2 0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+9.6s 3 0.00s - to python to disable frozen modules.
+9.6s 4 0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+10.3s 5 0.00s - Debugger warning: It seems that frozen modules are being used, which may
+10.3s 6 0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+10.3s 7 0.00s - to python to disable frozen modules.
+10.3s 8 0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+52.9s 9 torch 2.11.0+cu130 | diffusers 0.42.0
+52.9s 10 device  : cuda
+52.9s 11 data    : /kaggle/input/datasets/kudupudinikhil/coco-processed/processed
+52.9s 12 outputs : /kaggle/working/outputs
+53.2s 13 10 prompts, seed 42
+53.2s 14 
+53.2s 15 0  a bunch of suitcases that are on a cart.
+53.2s 16 1  a white plate topped with an icing and sauce covered dessert.
+53.2s 17 2  a biilboard with a railcar in front of it.
+53.2s 18 3  a man and his surfboard survey a stormy sea
+53.2s 19 4  a sandwich and side items next to a small serving of orange slices.
+53.2s 20 5  a group of people riding skis across a snow covered slope.
+53.2s 21 6  a person standing snow wearing a snow suit and skis
+53.2s 22 7  a man sitting with headphones on near several birds.
+53.2s 23 8  there are two desktop computer and one laptop on the desk.
+53.2s 24 9  the woman is riding a bike in a dress.
+53.5s 25 Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+53.5s 26 
+53.5s 27 Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+77.6s 28 CLIP(text, real photo) = 0.3092   <- the reference every arm is read against
+141.1s 29 Pipelines loaded with `dtype=torch.float16` cannot run with `cpu` device. It is not recommended to move them to `cpu` as running them will fail. Please make sure to use an accelerator to run the pipeline in inference, due to the lack of support for`float16` operations on this device in PyTorch. Please, remove the `dtype=torch.float16` argument, or use another device for inference.
+141.1s 30 
+141.1s 31 Pipelines loaded with `dtype=torch.float16` cannot run with `cpu` device. It is not recommended to move them to `cpu` as running them will fail. Please make sure to use an accelerator to run the pipeline in inference, due to the lack of support for`float16` operations on this device in PyTorch. Please, remove the `dtype=torch.float16` argument, or use another device for inference.
+141.2s 32 36.1s   {'allocated_gb': 2.6, 'peak_gb': 3.2}
+142.2s 33 Pipelines loaded with `dtype=torch.float16` cannot run with `cpu` device. It is not recommended to move them to `cpu` as running them will fail. Please make sure to use an accelerator to run the pipeline in inference, due to the lack of support for`float16` operations on this device in PyTorch. Please, remove the `dtype=torch.float16` argument, or use another device for inference.
+142.2s 34 
+142.2s 35 Pipelines loaded with `dtype=torch.float16` cannot run with `cpu` device. It is not recommended to move them to `cpu` as running them will fail. Please make sure to use an accelerator to run the pipeline in inference, due to the lack of support for`float16` operations on this device in PyTorch. Please, remove the `dtype=torch.float16` argument, or use another device for inference.
+142.4s 36 Pipelines loaded with `dtype=torch.float16` cannot run with `cpu` device. It is not recommended to move them to `cpu` as running them will fail. Please make sure to use an accelerator to run the pipeline in inference, due to the lack of support for`float16` operations on this device in PyTorch. Please, remove the `dtype=torch.float16` argument, or use another device for inference.
+142.4s 37 
+142.4s 38 Pipelines loaded with `dtype=torch.float16` cannot run with `cpu` device. It is not recommended to move them to `cpu` as running them will fail. Please make sure to use an accelerator to run the pipeline in inference, due to the lack of support for`float16` operations on this device in PyTorch. Please, remove the `dtype=torch.float16` argument, or use another device for inference.
+162.3s 39 The AmusedPipeline has been deprecated and will not receive bug fixes or feature updates after Diffusers version 0.33.1.
+162.3s 40 
+162.3s 41 The AmusedPipeline has been deprecated and will not receive bug fixes or feature updates after Diffusers version 0.33.1.
+176.5s 42 Pipelines loaded with `dtype=torch.float16` cannot run with `cpu` device. It is not recommended to move them to `cpu` as running them will fail. Please make sure to use an accelerator to run the pipeline in inference, due to the lack of support for`float16` operations on this device in PyTorch. Please, remove the `dtype=torch.float16` argument, or use another device for inference.
+176.5s 43 
+176.5s 44 Pipelines loaded with `dtype=torch.float16` cannot run with `cpu` device. It is not recommended to move them to `cpu` as running them will fail. Please make sure to use an accelerator to run the pipeline in inference, due to the lack of support for`float16` operations on this device in PyTorch. Please, remove the `dtype=torch.float16` argument, or use another device for inference.
+176.6s 45 13.6s   {'allocated_gb': 2.27, 'peak_gb': 3.34}
+177.4s 46 Pipelines loaded with `dtype=torch.float16` cannot run with `cpu` device. It is not recommended to move them to `cpu` as running them will fail. Please make sure to use an accelerator to run the pipeline in inference, due to the lack of support for`float16` operations on this device in PyTorch. Please, remove the `dtype=torch.float16` argument, or use another device for inference.
+177.4s 47 
+177.4s 48 Pipelines loaded with `dtype=torch.float16` cannot run with `cpu` device. It is not recommended to move them to `cpu` as running them will fail. Please make sure to use an accelerator to run the pipeline in inference, due to the lack of support for`float16` operations on this device in PyTorch. Please, remove the `dtype=torch.float16` argument, or use another device for inference.
+177.6s 49 Pipelines loaded with `dtype=torch.float16` cannot run with `cpu` device. It is not recommended to move them to `cpu` as running them will fail. Please make sure to use an accelerator to run the pipeline in inference, due to the lack of support for`float16` operations on this device in PyTorch. Please, remove the `dtype=torch.float16` argument, or use another device for inference.
+177.6s 50 
+177.6s 51 Pipelines loaded with `dtype=torch.float16` cannot run with `cpu` device. It is not recommended to move them to `cpu` as running them will fail. Please make sure to use an accelerator to run the pipeline in inference, due to the lack of support for`float16` operations on this device in PyTorch. Please, remove the `dtype=torch.float16` argument, or use another device for inference.
+214.6s 52 An error occurred while trying to fetch /root/.cache/huggingface/hub/models--CompVis--ldm-text2im-large-256/snapshots/30de525ca11a880baea4962827fb6cb0bb268955/unet: Error no file named diffusion_pytorch_model.safetensors found in directory /root/.cache/huggingface/hub/models--CompVis--ldm-text2im-large-256/snapshots/30de525ca11a880baea4962827fb6cb0bb268955/unet.
+214.6s 53 
+214.6s 54 An error occurred while trying to fetch /root/.cache/huggingface/hub/models--CompVis--ldm-text2im-large-256/snapshots/30de525ca11a880baea4962827fb6cb0bb268955/unet: Error no file named diffusion_pytorch_model.safetensors found in directory /root/.cache/huggingface/hub/models--CompVis--ldm-text2im-large-256/snapshots/30de525ca11a880baea4962827fb6cb0bb268955/unet.
+214.6s 55 Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+214.6s 56 
+214.6s 57 Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+217.3s 58 An error occurred while trying to fetch /root/.cache/huggingface/hub/models--CompVis--ldm-text2im-large-256/snapshots/30de525ca11a880baea4962827fb6cb0bb268955/vqvae: Error no file named diffusion_pytorch_model.safetensors found in directory /root/.cache/huggingface/hub/models--CompVis--ldm-text2im-large-256/snapshots/30de525ca11a880baea4962827fb6cb0bb268955/vqvae.
+217.3s 59 
+217.3s 60 An error occurred while trying to fetch /root/.cache/huggingface/hub/models--CompVis--ldm-text2im-large-256/snapshots/30de525ca11a880baea4962827fb6cb0bb268955/vqvae: Error no file named diffusion_pytorch_model.safetensors found in directory /root/.cache/huggingface/hub/models--CompVis--ldm-text2im-large-256/snapshots/30de525ca11a880baea4962827fb6cb0bb268955/vqvae.
+217.3s 61 Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+217.3s 62 
+217.3s 63 Defaulting to unsafe serialization. Pass `allow_pickle=False` to raise an error instead.
+218.2s 64 The config attributes {'timestep_values': None} were passed to DDIMScheduler, but are not expected and will be ignored. Please verify your scheduler_config.json configuration file.
+218.2s 65 
+218.2s 66 The config attributes {'timestep_values': None} were passed to DDIMScheduler, but are not expected and will be ignored. Please verify your scheduler_config.json configuration file.
+243.2s 67 17.4s   {'allocated_gb': 3.48, 'peak_gb': 3.99}
+243.4s 68 Pipelines loaded with `dtype=torch.float16` cannot run with `cpu` device. It is not recommended to move them to `cpu` as running them will fail. Please make sure to use an accelerator to run the pipeline in inference, due to the lack of support for`float16` operations on this device in PyTorch. Please, remove the `dtype=torch.float16` argument, or use another device for inference.
+243.4s 69 
+243.4s 70 Pipelines loaded with `dtype=torch.float16` cannot run with `cpu` device. It is not recommended to move them to `cpu` as running them will fail. Please make sure to use an accelerator to run the pipeline in inference, due to the lack of support for`float16` operations on this device in PyTorch. Please, remove the `dtype=torch.float16` argument, or use another device for inference.
+244.8s 71 Pipelines loaded with `dtype=torch.float16` cannot run with `cpu` device. It is not recommended to move them to `cpu` as running them will fail. Please make sure to use an accelerator to run the pipeline in inference, due to the lack of support for`float16` operations on this device in PyTorch. Please, remove the `dtype=torch.float16` argument, or use another device for inference.
+244.8s 72 
+244.8s 73 Pipelines loaded with `dtype=torch.float16` cannot run with `cpu` device. It is not recommended to move them to `cpu` as running them will fail. Please make sure to use an accelerator to run the pipeline in inference, due to the lack of support for`float16` operations on this device in PyTorch. Please, remove the `dtype=torch.float16` argument, or use another device for inference.
+244.9s 74 Pipelines loaded with `dtype=torch.float16` cannot run with `cpu` device. It is not recommended to move them to `cpu` as running them will fail. Please make sure to use an accelerator to run the pipeline in inference, due to the lack of support for`float16` operations on this device in PyTorch. Please, remove the `dtype=torch.float16` argument, or use another device for inference.
+244.9s 75 
+244.9s 76 Pipelines loaded with `dtype=torch.float16` cannot run with `cpu` device. It is not recommended to move them to `cpu` as running them will fail. Please make sure to use an accelerator to run the pipeline in inference, due to the lack of support for`float16` operations on this device in PyTorch. Please, remove the `dtype=torch.float16` argument, or use another device for inference.
+245.4s 77 real COCO photographs score 0.3092
+245.4s 78 
+246.9s 79 /kaggle/working/outputs/sweep/arm_comparison.png
+247.9s 80 /kaggle/working/outputs/sweep/SD_1.5_CLIP_diffusion_512
+248.2s 81 /kaggle/working/outputs/sweep/aMUSEd_CLIP_masked_transformer_256
+248.4s 82 /kaggle/working/outputs/sweep/LDM-BERT_BERT_diffusion_256
+248.7s 83 /kaggle/working/outputs/tables/milestone_2_comparison.json
+248.7s 84 
+248.7s 85 best adherence : SD 1.5 (CLIP, diffusion, 512)  (0.3209)
+248.7s 86 fastest        : aMUSEd (CLIP, masked transformer, 256)  (1.36s per image)
+256.1s 87 /usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\|'
+256.1s 88 cells[i][c] = re.sub('\\\\\|', '|', cell)
+256.4s 89 /usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\_'
+256.4s 90 text = re.sub(r'_', '\_', text) # Escape underscores in display text
+257.4s 91 [NbConvertApp] Converting notebook __notebook__.ipynb to notebook
+257.6s 92 [NbConvertApp] Writing 5267864 bytes to __notebook__.ipynb
+260.4s 93 [NbConvertApp] Converting notebook __notebook__.ipynb to html
+261.5s 94 [NbConvertApp] Support files will be in __results___files/
+261.5s 95 [NbConvertApp] Making directory __results___files
+261.5s 96 [NbConvertApp] Making directory __results___files
+261.5s 97 [NbConvertApp] Making directory __results___files
+261.5s 98 [NbConvertApp] Writing 639713 bytes to __results__.html

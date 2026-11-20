@@ -1,0 +1,53 @@
+8.5s 1 0.00s - Debugger warning: It seems that frozen modules are being used, which may
+8.5s 2 0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+8.5s 3 0.00s - to python to disable frozen modules.
+8.5s 4 0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+9.1s 5 0.00s - Debugger warning: It seems that frozen modules are being used, which may
+9.1s 6 0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+9.1s 7 0.00s - to python to disable frozen modules.
+9.1s 8 0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+42.0s 9 torch 2.11.0+cu130 | transformers 5.20.2
+42.0s 10 device  : cuda
+42.0s 11 data    : /kaggle/input/datasets/kudupudinikhil/coco-processed/processed
+42.0s 12 outputs : /kaggle/working/outputs
+42.2s 13 captions      : 6,000
+42.2s 14 sibling pairs : 3,000 images with two captions each
+42.2s 15 
+42.2s 16 bedroom scene with a bookcase, blue comforter and window.
+42.2s 17 a bedroom with a bookshelf full of books.
+42.2s 18 
+42.2s 19 three teddy bears, each a different color, snuggling together.
+42.2s 20 three stuffed animals are sitting on a bed.
+42.2s 21 
+42.2s 22 a woman posing for the camera standing on skis.
+42.2s 23 a woman standing on skiis while posing for the camera
+42.2s 24 
+42.3s 25 _create_4d_causal_attention_mask    absent
+42.3s 26 causal_attention_mask               absent
+42.3s 27 is_causal                           present
+42.3s 28 
+42.3s 29 Both mask future tokens. Only the training objective differs.
+42.6s 30 Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+42.6s 31 
+42.6s 32 Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+65.9s 33 
+65.9s 34 (6000, 512)  float32  in 16.1s
+88.7s 35 
+88.7s 36 (6000, 768) CLS, (6000, 768) mean, in 18.6s
+93.6s 37 pad token set to '<|endoftext|>'
+116.1s 38 
+116.1s 39 (6000, 768) last-token, (6000, 768) mean, in 22.5s
+116.1s 40 saved to /kaggle/working/outputs/embeddings
+116.7s 41 /kaggle/working/outputs/tables/milestone_2_encoders.json
+116.7s 42 
+116.7s 43 best separation: CLIP ViT-B/32 (pooled)  (gap 0.2790, 1.55x random)
+122.0s 44 /usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\|'
+122.0s 45 cells[i][c] = re.sub('\\\\\|', '|', cell)
+122.2s 46 /usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\_'
+122.2s 47 text = re.sub(r'_', '\_', text) # Escape underscores in display text
+122.9s 48 [NbConvertApp] Converting notebook __notebook__.ipynb to notebook
+123.0s 49 [NbConvertApp] Writing 416207 bytes to __notebook__.ipynb
+125.5s 50 [NbConvertApp] Converting notebook __notebook__.ipynb to html
+126.0s 51 [NbConvertApp] Support files will be in __results___files/
+126.0s 52 [NbConvertApp] Making directory __results___files
+126.0s 53 [NbConvertApp] Writing 612505 bytes to __results__.html

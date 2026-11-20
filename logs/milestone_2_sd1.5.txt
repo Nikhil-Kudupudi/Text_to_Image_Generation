@@ -1,0 +1,114 @@
+7.4s 1 0.00s - Debugger warning: It seems that frozen modules are being used, which may
+7.4s 2 0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+7.4s 3 0.00s - to python to disable frozen modules.
+7.4s 4 0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+8.0s 5 0.00s - Debugger warning: It seems that frozen modules are being used, which may
+8.0s 6 0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+8.0s 7 0.00s - to python to disable frozen modules.
+8.0s 8 0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+43.1s 9 torch 2.11.0+cu130 | diffusers 0.42.0 | transformers 5.20.2
+43.1s 10 device  : cuda
+43.1s 11 gpu     : Tesla T4  14.6 GB  sm_75
+43.1s 12 kernels : yes
+43.1s 13 data    : /kaggle/input/datasets/kudupudinikhil/coco-processed/processed
+43.1s 14 outputs : /kaggle/working/outputs
+43.1s 15 seed 42 | 10 prompts | batch 4 | torch.float16
+43.4s 16 6,000 curated pairs -> 10 fixed prompts
+43.4s 17 
+43.4s 18 0  [ 9w]  a bunch of suitcases that are on a cart.
+43.4s 19 1  [11w]  a white plate topped with an icing and sauce covered dessert.
+43.4s 20 2  [ 9w]  a biilboard with a railcar in front of it.
+43.4s 21 3  [ 9w]  a man and his surfboard survey a stormy sea
+43.4s 22 4  [13w]  a sandwich and side items next to a small serving of orange slices.
+43.4s 23 5  [11w]  a group of people riding skis across a snow covered slope.
+43.4s 24 6  [10w]  a person standing snow wearing a snow suit and skis
+43.4s 25 7  [ 9w]  a man sitting with headphones on near several birds.
+43.4s 26 8  [11w]  there are two desktop computer and one laptop on the desk.
+43.4s 27 9  [ 9w]  the woman is riding a bike in a dress.
+43.4s 28 
+43.4s 29 reference photos found: 10/10
+43.5s 30 latents      : (10, 4, 64, 64)  torch.float32  on cpu
+43.5s 31 reproducible : True
+43.5s 32 generators   : 10, seeds 42..51
+43.9s 33 Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+43.9s 34 
+43.9s 35 Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+58.8s 36 encoder       : openai/clip-vit-large-patch14
+58.8s 37 prompt_embeds : (10, 77, 768)  torch.float32
+58.8s 38 negative      : (10, 77, 768)  (the empty string, one row per prompt)
+58.8s 39 size          : 2.3 MB
+85.9s 40 loaded        : stable-diffusion-v1-5/stable-diffusion-v1-5  in 27.1s
+85.9s 41 scheduler     : PNDMScheduler
+85.9s 42 beta_schedule : scaled_linear
+85.9s 43 train steps   : 1000
+85.9s 44 vram          : {'allocated_gb': 2.02, 'reserved_gb': 2.07, 'peak_gb': 2.02}
+86.1s 45 ours   : (1, 77, 768)  torch.float32
+86.1s 46 theirs : (1, 77, 768)  torch.float16
+86.1s 47 max |difference|  positive 3.055e-02   negative 3.055e-02
+86.1s 48 embedding scale   33.06   -> relative 9.24e-04
+86.3s 49 pndm     PNDMScheduler                      beta=scaled_linear
+86.3s 50 ddim     DDIMScheduler                      beta=scaled_linear
+86.3s 51 lms      LMSDiscreteScheduler               beta=scaled_linear
+86.3s 52 euler    EulerDiscreteScheduler             beta=scaled_linear
+86.3s 53 euler_a  EulerAncestralDiscreteScheduler    beta=scaled_linear
+86.3s 54 dpmpp    DPMSolverMultistepScheduler        beta=scaled_linear
+86.3s 55 unipc    UniPCMultistepScheduler            beta=scaled_linear
+86.3s 56 
+86.3s 57 karras accepted by: ['lms', 'euler', 'dpmpp', 'unipc']
+86.3s 58 zero-snr accepted by: ['ddim', 'euler', 'euler_a', 'dpmpp', 'unipc']
+86.3s 59 dpmpp_s20_g7.5
+86.3s 60 dpmpp_s20_g15_r0.7_trailing_karras
+86.3s 61 batches(10, 4) -> [slice(0, 4, None), slice(4, 8, None), slice(8, 10, None)]
+99.8s 62 CLIP(text, real photo) = 0.3092   <- the reference every score is read against
+199.7s 63 config  : pndm_s50_g7.5_leading
+199.7s 64 time    : 99.9s for 10 images (9.99s each, 0.200s per step)
+199.7s 65 CLIP    : 0.3024 +/- 0.0229   (real photos 0.3092)
+199.7s 66 vram    : {'allocated_gb': 2.58, 'reserved_gb': 3.57, 'peak_gb': 3.19}
+201.9s 67 wrote /kaggle/working/outputs/sweep/baseline
+1209.2s 68 12 combinations on dpmpp at CFG 7.5
+1515.9s 69 /usr/local/lib/python3.13/dist-packages/diffusers/image_processor.py:143: RuntimeWarning: invalid value encountered in cast
+1515.9s 70 images = (images * 255).round().astype("uint8")
+1515.9s 71 
+1515.9s 72 /usr/local/lib/python3.13/dist-packages/diffusers/image_processor.py:143: RuntimeWarning: invalid value encountered in cast
+1515.9s 73 images = (images * 255).round().astype("uint8")
+1696.2s 74 /usr/local/lib/python3.13/dist-packages/diffusers/image_processor.py:143: RuntimeWarning: invalid value encountered in cast
+1696.2s 75 images = (images * 255).round().astype("uint8")
+1696.2s 76 
+1696.2s 77 /usr/local/lib/python3.13/dist-packages/diffusers/image_processor.py:143: RuntimeWarning: invalid value encountered in cast
+1696.2s 78 images = (images * 255).round().astype("uint8")
+2175.6s 79 ddpm_s1000_g7.5_linspace       424.8s  (212.4s per image)
+2184.5s 80 dpmpp_s20_g7.5_leading           8.9s  (4.4s per image)
+2184.5s 81 
+2184.5s 82 speed-up: 48x for 50x fewer steps
+2186.0s 83 configurations : 22  (0 failed, 2 duplicates dropped)
+2186.0s 84 total GPU time : 23.2 min
+2186.0s 85 
+2186.0s 86 baseline       : pndm_s50_g7.5_leading               0.3024
+2186.0s 87 best           : euler_a_s30_g7.5_leading            0.3199
+2186.0s 88 real photos    : (reference)                         0.3092
+2186.0s 89 improvement    : +0.0175
+2186.0s 90 
+2252.6s 91 /kaggle/working/outputs/sweep/baseline_vs_best.png
+2253.6s 92 /kaggle/working/outputs/tables/milestone_2_sd15.json
+2253.6s 93 /kaggle/working/outputs/sweep/all_results.csv
+2253.6s 94 {
+2253.6s 95 "config": "euler_a_s30_g7.5_leading",
+2253.6s 96 "clip_text_generated": 0.31987228989601135,
+2253.6s 97 "seconds": 99.9
+2253.6s 98 }
+2254.4s 99 released: {'allocated_gb': 0.01, 'reserved_gb': 0.03, 'peak_gb': 3.19}
+2260.0s 100 /usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\|'
+2260.0s 101 cells[i][c] = re.sub('\\\\\|', '|', cell)
+2260.2s 102 /usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\_'
+2260.2s 103 text = re.sub(r'_', '\_', text) # Escape underscores in display text
+2261.0s 104 [NbConvertApp] Converting notebook __notebook__.ipynb to notebook
+2261.4s 105 [NbConvertApp] Writing 18062315 bytes to __notebook__.ipynb
+2263.9s 106 [NbConvertApp] Converting notebook __notebook__.ipynb to html
+2264.8s 107 [NbConvertApp] Support files will be in __results___files/
+2264.8s 108 [NbConvertApp] Making directory __results___files
+2264.8s 109 [NbConvertApp] Making directory __results___files
+2264.8s 110 [NbConvertApp] Making directory __results___files
+2264.8s 111 [NbConvertApp] Making directory __results___files
+2264.8s 112 [NbConvertApp] Making directory __results___files
+2264.8s 113 [NbConvertApp] Making directory __results___files
+2264.8s 114 [NbConvertApp] Writing 743513 bytes to __results__.html
