@@ -17,6 +17,17 @@ For the normal repository layout — `src/modules/`, the test suite, the impleme
 | `notebooks/milestone_2_sd15.ipynb` | `prompt_embeds` integration, baseline, CFG + sampler + noise-schedule sweep, DDPM illustration | milestone 1's `data/processed/` |
 | `notebooks/milestone_2_encoders.ipynb` | CLIP vs BERT vs GPT-2 sibling-gap comparison, no generation | milestone 1's `data/processed/` |
 | `notebooks/milestone_2_comparison.ipynb` | SD 1.5 vs aMUSEd vs LDM-BERT — transformer-only against diffusion | the above, plus ~7 GB of weights |
+| `notebooks/milestone_3_render_models.ipynb` | 500 images each for SD baseline, SD tuned, SD tuned + CLIP penultimate layer, LDM-BERT, aMUSEd (~3.5 h on a T4) | milestone 1's `data/processed/` |
+| `notebooks/milestone_3_render_guidance.ipynb` | 200 images each for the tuned SD setting at guidance 1, 3, 5, 7.5, 11, 15 (~2.5 h on a T4) | milestone 1's `data/processed/` |
+| `notebooks/milestone_3_evaluation.ipynb` | FID, Inception Score, CLIP alignment, guidance and embedding sensitivity, comparison plots and ranking (~1 h) | `data/processed/` plus the outputs of both render notebooks |
+
+### Milestone 3 run order
+
+The two render notebooks are independent; run them first, in either order (two Kaggle sessions in
+parallel if you like). Then create the evaluation notebook and **Add Input → Your Work → Notebook
+output** for both render notebooks, alongside the `coco-processed` Dataset. The evaluation notebook
+finds the rendered `images/` and `tables/` folders wherever Kaggle mounts them, and skips any config
+folder that is missing, so a partly finished render can still be scored.
 
 ## How a notebook is self-contained
 
