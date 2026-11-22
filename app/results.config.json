@@ -1,0 +1,7 @@
+{
+  "sources": {
+    "m3": ["../outputs/milestone_3"],
+    "m2": ["../outputs/milestone_2", "../outputs/milestone_2_sd1.5/outputs"],
+    "real": ["../data/processed/images_512"]
+  }
+}

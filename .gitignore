@@ -227,3 +227,6 @@ outputs/
 
 *.pdf
 *.docx
+# Results website
+app/node_modules/
+app/dist/
