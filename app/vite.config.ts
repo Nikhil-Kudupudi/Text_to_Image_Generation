@@ -4,7 +4,6 @@ import { fileURLToPath } from "node:url";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
-// @ts-expect-error plain JS module shared with the build step
 import { buildManifest, copyResults, loadSources, resolveFile } from "./server/results.mjs";
 
 const appDir = path.dirname(fileURLToPath(import.meta.url));

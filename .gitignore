@@ -230,3 +230,5 @@ outputs/
 # Results website
 app/node_modules/
 app/dist/
+!app/src/lib/
+!app/tests/lib/

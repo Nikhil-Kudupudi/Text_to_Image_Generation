@@ -1,0 +1,130 @@
+/* Design tokens. Every colour in the app comes from here.
+   Theme: html[data-theme="light" | "dark"] (set by lib/theme.ts); before JS runs, the OS preference applies. */
+
+:root,
+html[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f6f6f4;
+  --surface: #ffffff;
+  --surface-2: #f0efeb;
+  --border: #e3e2dc;
+  --border-strong: #cfcec6;
+  --text-1: #0b0b0b;
+  --text-2: #52514e;
+  --text-3: #898781;
+  --accent: #2c64b0;
+  --accent-hover: #24579c;
+  --accent-soft: #e6eef9;
+  --accent-text: #ffffff;
+  --danger: #c2412d;
+  --ok: #1a8a5f;
+
+  --chart-surface: #fcfcfb;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --tooltip-bg: #1f1f1d;
+  --tooltip-text: #f0efec;
+
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-5: #e87ba4;
+  --series-muted: #898781;
+
+  --shadow-s: 0 1px 2px rgba(20, 20, 18, 0.05);
+  --shadow-m: 0 6px 18px -6px rgba(20, 20, 18, 0.16), 0 2px 4px rgba(20, 20, 18, 0.05);
+  --shadow-l: 0 24px 60px -12px rgba(0, 0, 0, 0.35);
+  --scrim: rgba(12, 12, 11, 0.82);
+  /* The lightbox always sits on a dark scrim, so its colours do not change with the theme. */
+  --lightbox-text: #f0efec;
+  --lightbox-text-2: #c3c2b7;
+  --lightbox-control: rgba(255, 255, 255, 0.08);
+  --lightbox-control-hover: rgba(255, 255, 255, 0.16);
+  --lightbox-control-border: rgba(255, 255, 255, 0.14);
+  --focus: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+
+  --radius-s: 6px;
+  --radius-m: 10px;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --font-sketch: "Kalam", "Comic Sans MS", cursive;
+
+  --sidebar-w: 232px;
+  --content-max: 1280px;
+  --gutter: 32px;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #121211;
+    --surface: #1a1a19;
+    --surface-2: #222220;
+    --border: #2c2c2a;
+    --border-strong: #3a3a37;
+    --text-1: #f0efec;
+    --text-2: #c3c2b7;
+    --text-3: #898781;
+    --accent: #6a9fe8;
+    --accent-hover: #86b2ee;
+    --accent-soft: #1c2a3d;
+    --accent-text: #0b0b0b;
+    --danger: #e8705c;
+    --ok: #3fbf8a;
+    --chart-surface: #1a1a19;
+    --grid: #2c2c2a;
+    --axis: #383835;
+    --tooltip-bg: #f0efec;
+    --tooltip-text: #0b0b0b;
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --series-4: #c98500;
+    --series-5: #d55181;
+    --series-muted: #898781;
+    --shadow-s: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-m: 0 8px 22px -8px rgba(0, 0, 0, 0.7), 0 2px 4px rgba(0, 0, 0, 0.3);
+    --scrim: rgba(0, 0, 0, 0.85);
+  }
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #121211;
+  --surface: #1a1a19;
+  --surface-2: #222220;
+  --border: #2c2c2a;
+  --border-strong: #3a3a37;
+  --text-1: #f0efec;
+  --text-2: #c3c2b7;
+  --text-3: #898781;
+  --accent: #6a9fe8;
+  --accent-hover: #86b2ee;
+  --accent-soft: #1c2a3d;
+  --accent-text: #0b0b0b;
+  --danger: #e8705c;
+  --ok: #3fbf8a;
+  --chart-surface: #1a1a19;
+  --grid: #2c2c2a;
+  --axis: #383835;
+  --tooltip-bg: #f0efec;
+  --tooltip-text: #0b0b0b;
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --series-4: #c98500;
+  --series-5: #d55181;
+  --series-muted: #898781;
+  --shadow-s: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-m: 0 8px 22px -8px rgba(0, 0, 0, 0.7), 0 2px 4px rgba(0, 0, 0, 0.3);
+  --scrim: rgba(0, 0, 0, 0.85);
+}
+
+@media (max-width: 760px) {
+  :root {
+    --gutter: 16px;
+  }
+}
