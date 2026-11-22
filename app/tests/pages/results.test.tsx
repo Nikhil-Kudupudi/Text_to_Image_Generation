@@ -57,6 +57,8 @@ describe("Results page: settings", () => {
     renderPage(smoke());
     const line = screen.getByRole("img", { name: "Earlier sweep: CLIP vs guidance" });
     expect(marks(line, "point")).toHaveLength(5);
+    expect(marks(line, "reference")).toHaveLength(1);
+    expect(marks(line, "reference")[0]).toHaveTextContent("real photos 0.320");
     const bars = screen.getByRole("img", { name: "Earlier sweep: CLIP by sampler" });
     expect(marks(bars, "bar")).toHaveLength(6);
     expect(marks(bars, "reference")).toHaveLength(1);
@@ -206,5 +208,42 @@ describe("Results page: missing data", () => {
     const data = fixtureManifest({ size: "full" });
     renderPage(data);
     expect(bodyRows(screen.getByRole("table", { name: "Metrics" }))).toHaveLength(data.m3!.metrics.length);
+  });
+});
+
+describe("Results page: real-photo reference rows", () => {
+  // The notebooks add a "real" row (real COCO photos) to each metrics group: FID null, IS/CLIP set.
+  function withReal(): Manifest {
+    const m = fixtureManifest({ size: "smoke" });
+    const real = (group: "models" | "guidance", N: number, IS: number, CLIP: number) => ({
+      config: "real", group, label: "real photos", N, FID: null, IS_mean: IS, IS_std: 0.5, CLIP_mean: CLIP,
+      CLIP_std: 0.03, sec_per_image: null, resolution: 512, encoder: "", guidance: null,
+    });
+    // Higher than every model on IS and CLIP, so a contestant treatment would make it "best".
+    m.m3!.metrics.push(real("models", 8, 9.9, 0.399), real("guidance", 4, 9.8, 0.398));
+    return m;
+  }
+
+  it("is a reference line on bars and guidance lines, never a bar or a point", () => {
+    renderPage(withReal());
+    const clip = screen.getByRole("img", { name: "CLIP by model" });
+    expect(marks(clip, "bar")).toHaveLength(5);
+    expect(marks(clip, "reference")).toHaveLength(1);
+    expect(marks(screen.getByRole("img", { name: "FID by model" }), "reference")).toHaveLength(0);
+    const line = screen.getByRole("img", { name: "CLIP vs guidance" });
+    expect(marks(line, "point")).toHaveLength(2);
+    expect(marks(line, "reference")[0]).toHaveTextContent("real photos 0.398");
+    expect(marks(screen.getByRole("img", { name: "FID vs CLIP" }), "dot")).toHaveLength(5);
+  });
+
+  it("is a reference row in the metrics table and never marked best", () => {
+    renderPage(withReal());
+    const table = document.querySelector(".metrics-table") as HTMLElement;
+    const realRows = Array.from(table.querySelectorAll("tr.row-reference"));
+    expect(realRows).toHaveLength(2);
+    for (const r of realRows) expect(r.querySelector('[data-best="true"]')).toBeNull();
+    // The best CLIP in the models group is still a model (0.330), not real photos (0.399).
+    const best = table.querySelectorAll('td[data-col="CLIP"][data-best="true"]');
+    expect(Array.from(best).map((td) => td.textContent)).toContain("0.330 ± 0.030 (best)");
   });
 });

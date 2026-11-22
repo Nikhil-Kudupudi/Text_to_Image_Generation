@@ -29,6 +29,11 @@ export interface Prompt {
 }
 
 export interface MetricRow {
+  /**
+   * A model ("sd_tuned"), a guidance render ("sweep_g7.5"), or "real": the real COCO photos as a
+   * reference row in each group (FID null, IS/CLIP set, sec_per_image null). See REAL_CONFIG in
+   * lib/configs.ts; pages show it as a reference line/row and never rank or mark it best.
+   */
   config: string;
   group: "models" | "guidance";
   label: string;
@@ -68,7 +73,10 @@ export interface M3Results {
   metrics: MetricRow[];
   settings: Record<string, unknown> | null;
   ranking: RankRow[];
-  /** clip[config][idx] = per-image CLIP score (cosine, ~0.3) */
+  /**
+   * clip[config][idx] = per-image CLIP score (cosine, ~0.3). Also has clip.real[idx]: the CLIP score of
+   * the real photo for prompt idx of `prompts` (the guidance prompts are the first of the same list).
+   */
   clip: Record<string, Record<number, number>>;
   /** file names in m3 plots/, served at /results/m3/plots/<name> */
   plots: string[];

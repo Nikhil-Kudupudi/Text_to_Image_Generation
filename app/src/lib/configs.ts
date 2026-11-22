@@ -10,6 +10,15 @@ export const MODEL_META: Record<ModelConfig, { label: string; short: string }> =
   amused: { label: "aMUSEd", short: "aMUSEd" },
 };
 
+/**
+ * The real COCO photos. The notebooks add them as a reference row to each metrics group and to the
+ * per-image CLIP table. A reference, never a contestant: never ranked, never "best", no series colour.
+ */
+export const REAL_CONFIG = "real";
+
+export const isReal = (r: { config: string } | string): boolean =>
+  (typeof r === "string" ? r : r.config) === REAL_CONFIG;
+
 export function isModelConfig(config: string): config is ModelConfig {
   return (MODEL_ORDER as string[]).includes(config);
 }

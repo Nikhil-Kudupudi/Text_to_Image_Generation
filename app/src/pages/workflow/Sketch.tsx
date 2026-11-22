@@ -33,11 +33,29 @@ function sum(rows: { images: number }[] | undefined): number | null {
   return rows ? rows.reduce((a, r) => a + r.images, 0) : null;
 }
 
+/** Prompt count of a render: the prompts table, else the logged image count. */
+function promptCount(prompts: unknown[], rows: { n_images?: number; images: number }[]): number {
+  return prompts.length || Math.max(0, ...rows.map((r) => r.n_images ?? r.images));
+}
+
+/** Stage 4 subtitles from the manifest (smoke or full run); the planned full run when there is none. */
+function renderSubs(data: Manifest | null): { models: string; guidance: string } {
+  const m3 = data?.m3;
+  if (!m3) return { models: "500 prompts, 5 models", guidance: "200 prompts, g = 1…15" };
+  const gs = m3.sweep.map((r) => r.guidance);
+  const range = gs.length === 0 ? "—" : gs.length <= 3 ? gs.join(", ") : `${Math.min(...gs)}…${Math.max(...gs)}`;
+  return {
+    models: `${promptCount(m3.prompts, m3.models)} prompts, ${m3.models.length} models`,
+    guidance: `${promptCount(m3.promptsGuidance, m3.sweep)} prompts, g = ${range}`,
+  };
+}
+
 export default function Sketch({ data }: { data: Manifest | null }) {
   const m = sum(data?.m3?.models);
   const g = sum(data?.m3?.sweep);
   const p = data?.m3 ? data.m3.plots.length : null;
   const c = (v: number | null, unit: string) => (v === null ? "—" : `${v.toLocaleString()} ${unit}`);
+  const subs = renderSubs(data);
   return (
     <div className="sk">
       <Stage id="coco" n={1} chip="data" title="COCO 2017 val captions" sub="3,000 images × 2 captions" radius="14px 10px 16px 9px" />
@@ -49,10 +67,10 @@ export default function Sketch({ data }: { data: Manifest | null }) {
       </Stage>
       <Arrow />
       <div className="sk-branch">
-        <Stage id="render-models" n={4} chip="notebook" title="Render models" sub="500 prompts, 5 models" radius="9px 16px 11px 14px">
+        <Stage id="render-models" n={4} chip="notebook" title="Render models" sub={subs.models} radius="9px 16px 11px 14px">
           <div className="sk-count" data-testid="count-models">{c(m, "images")}</div>
         </Stage>
-        <Stage id="render-guidance" n={4} chip="notebook" title="Render guidance" sub="200 prompts, g = 1…15" radius="15px 10px 9px 16px">
+        <Stage id="render-guidance" n={4} chip="notebook" title="Render guidance" sub={subs.guidance} radius="15px 10px 9px 16px">
           <div className="sk-count" data-testid="count-guidance">{c(g, "images")}</div>
         </Stage>
       </div>

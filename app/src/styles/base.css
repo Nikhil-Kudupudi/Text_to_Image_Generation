@@ -146,6 +146,7 @@ kbd,
 .table-wrap {
   width: 100%;
   overflow-x: auto;
+  position: relative; /* contains .sr-only cells so they scroll and clip with the table */
   border: 1px solid var(--border);
   border-radius: var(--radius-m);
   background: var(--surface);

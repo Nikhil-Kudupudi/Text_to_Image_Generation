@@ -47,7 +47,7 @@ export function HistoryStrip({
             <button
               type="button"
               className="icon-button gen-reuse"
-              aria-label="Reuse"
+              aria-label={`Reuse settings: ${r.prompt}`}
               title="Reuse settings"
               onClick={() => onReuse(r)}
             >
@@ -56,7 +56,27 @@ export function HistoryStrip({
           </li>
         ))}
       </ul>
-      <Lightbox items={lightboxItems} index={index} onClose={() => setIndex(null)} onIndex={setIndex} />
+      <Lightbox
+        items={lightboxItems}
+        index={index}
+        onClose={() => setIndex(null)}
+        onIndex={setIndex}
+        actions={
+          index !== null && items[index] ? (
+            <button
+              type="button"
+              className="button lightbox-action"
+              onClick={() => {
+                onReuse(items[index]);
+                setIndex(null);
+              }}
+            >
+              <GenIcon name="reuse" size={16} />
+              Reuse settings
+            </button>
+          ) : undefined
+        }
+      />
     </Section>
   );
 }

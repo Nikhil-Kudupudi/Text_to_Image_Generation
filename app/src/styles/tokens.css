@@ -43,6 +43,8 @@ html[data-theme="light"] {
   --lightbox-control-hover: rgba(255, 255, 255, 0.16);
   --lightbox-control-border: rgba(255, 255, 255, 0.14);
   --focus: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+  /* Notebook PNGs have a white background in both themes. */
+  --plot-paper: #ffffff;
 
   --radius-s: 6px;
   --radius-m: 10px;

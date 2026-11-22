@@ -244,11 +244,19 @@ describe("Generate page: history", () => {
     await user.click(within(dialog).getByRole("button", { name: "Close" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
 
-    await user.click(within(items[0]).getByRole("button", { name: "Reuse" }));
+    await user.click(within(items[0]).getByRole("button", { name: "Reuse settings: a newer kite" }));
     expect(promptBox()).toHaveValue("a newer kite");
     expect(screen.getByRole("radio", { name: "aMUSEd" })).toBeChecked();
     expect(screen.getByLabelText("Seed")).toHaveValue(99);
     expect(screen.getByLabelText("Steps")).toHaveValue(12);
+
+    // Reuse from inside the lightbox: fills the form with that item and closes the viewer.
+    await user.click(within(items[1]).getByRole("button", { name: "an older bus" }));
+    const box = await screen.findByRole("dialog");
+    await user.click(within(box).getByRole("button", { name: "Reuse settings" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    expect(promptBox()).toHaveValue("an older bus");
+    expect(screen.getByRole("radio", { name: "SD tuned" })).toBeChecked();
   });
 
   it("puts a new generation first in the strip", async () => {

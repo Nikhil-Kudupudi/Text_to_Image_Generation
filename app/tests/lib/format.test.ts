@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { fmt, fmtSeconds, plotTitle } from "../../src/lib/format";
+import { fmt, fmtGb, fmtSeconds, isNum, plotTitle } from "../../src/lib/format";
 
 describe("format", () => {
   it("fmt renders null/undefined/NaN as an em dash", () => {
@@ -15,6 +15,13 @@ describe("format", () => {
   it("fmtSeconds", () => {
     expect(fmtSeconds(2.798)).toBe("2.8 s");
     expect(fmtSeconds(null)).toBe("—");
+  });
+  it("fmtGb and isNum", () => {
+    expect(fmtGb(2.63)).toBe("2.6 GB");
+    expect(fmtGb(null)).toBe("—");
+    expect(isNum(0)).toBe(true);
+    expect(isNum(Infinity)).toBe(false);
+    expect(isNum("1")).toBe(false);
   });
   it("plotTitle", () => {
     expect(plotTitle("m3_fid_is_bars.png")).toBe("FID IS bars");

@@ -197,3 +197,20 @@ describe("Models page — no data", () => {
     expect(screen.getByRole("status")).toHaveTextContent("Loading");
   });
 });
+
+describe("Models page — images without prompt tables", () => {
+  it("browses and compares the images by index when m3_prompts*.csv are missing", () => {
+    const data = fixtureManifest({ size: "smoke", partial: true });
+    data.m3!.prompts = [];
+    data.m3!.promptsGuidance = [];
+    renderHome(data);
+    expect(screen.getByText("5 models · 8 prompts")).toBeInTheDocument();
+    // compare: real photo frame empty (no photo known), one tile per model
+    const tiles = screen.getAllByTestId("compare-tile");
+    expect(tiles).toHaveLength(6);
+    expect(within(tiles[0]).getByRole("img", { name: "Real photo (missing)" })).toBeInTheDocument();
+    expect(within(tiles[1]).getByRole("button", { name: "SD baseline" })).toBeInTheDocument();
+    // browse: thumbs labelled by index
+    expect(within(region("Browse")).getByRole("button", { name: "#0" })).toBeInTheDocument();
+  });
+});

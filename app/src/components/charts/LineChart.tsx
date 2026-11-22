@@ -17,6 +17,8 @@ export interface LineChartProps {
   better?: Better;
   format?: (v: number) => string;
   color?: string;
+  /** Horizontal reference line (e.g. real photos), drawn in neutral ink and included in the y range. */
+  reference?: { value: number; label: string };
   ariaLabel: string;
 }
 
@@ -26,13 +28,14 @@ const BOTTOM = 44;
 const INSET = 12;
 
 /** One series over a numeric x: crosshair + tooltip, error whiskers, line broken at nulls. */
-export function LineChart({ points, xLabel, yLabel, better, format = defaultFormat, color = "var(--series-1)", ariaLabel }: LineChartProps) {
+export function LineChart({ points, xLabel, yLabel, better, format = defaultFormat, color = "var(--series-1)", reference, ariaLabel }: LineChartProps) {
   const [ref, width] = useWidth();
   const [active, setActive] = useState<{ i: number; focus: boolean } | null>(null);
 
   const pts = [...points].sort((a, b) => a.x - b.x);
   const valid = pts.map((p, i) => ({ ...p, i })).filter((p): p is LinePoint & { y: number; i: number } => p.y != null);
   const ys = valid.flatMap((p) => [p.y - (p.err ?? 0), p.y + (p.err ?? 0)]);
+  if (reference && ys.length) ys.push(reference.value);
   const yTicks = ys.length ? niceTicks(Math.min(...ys), Math.max(...ys)) : [0, 1];
   const yFmt = tickFormatter(yTicks);
   const xs = pts.map((p) => p.x);
@@ -95,6 +98,16 @@ export function LineChart({ points, xLabel, yLabel, better, format = defaultForm
         {cur && (
           <line data-mark="crosshair" x1={x(cur.x)} x2={x(cur.x)} y1={TOP} y2={bottom} stroke="var(--text-3)" strokeWidth={1} pointerEvents="none" />
         )}
+        {reference && valid.length > 0 && (
+          <g data-mark="reference" aria-hidden="true" pointerEvents="none">
+            <line x1={left} x2={right} y1={y(reference.value)} y2={y(reference.value)} stroke="var(--text-3)" strokeWidth={1} />
+            {/* Above the line, or below it when the line sits at the top of the plot (clear of the y label). */}
+            <text x={left + 4} y={y(reference.value) < TOP + 14 ? y(reference.value) + 13 : y(reference.value) - 5}
+              fill="var(--text-2)" fontSize={FONT.tick}>
+              {reference.label} {format(reference.value)}
+            </text>
+          </g>
+        )}
         <g pointerEvents="none">
           {valid.filter((p) => p.err != null).map((p) => (
             <g key={p.i} data-mark="err" stroke={color} strokeOpacity={0.7} strokeWidth={1.5} strokeLinecap="round">
@@ -128,7 +141,7 @@ export function LineChart({ points, xLabel, yLabel, better, format = defaultForm
           rows={[{ value: fmtVal(cur), label: yLabel, color }]} />
       )}
       <SrTable
-        caption={`${ariaLabel}${better ? ` (${betterHint(better)})` : ""}`}
+        caption={`${ariaLabel}${better ? ` (${betterHint(better)})` : ""}${reference ? `; ${reference.label} ${format(reference.value)}` : ""}`}
         head={[xLabel, yLabel, ...(pts.some((p) => p.err != null) ? ["±"] : [])]}
         rows={pts.map((p) => [
           defaultFormat(p.x),

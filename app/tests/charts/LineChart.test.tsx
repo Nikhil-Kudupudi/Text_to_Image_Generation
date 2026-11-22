@@ -66,3 +66,24 @@ describe("LineChart", () => {
     expect(within(screen.getByRole("table")).getAllByRole("row")).toHaveLength(points.length + 1);
   });
 });
+
+describe("LineChart reference", () => {
+  it("draws a labelled reference line and includes it in the y range and the table caption", () => {
+    const { container } = render(
+      <LineChart points={points} xLabel="g" yLabel="CLIP" format={(v) => v.toFixed(1)}
+        reference={{ value: 40, label: "real photos" }} ariaLabel="CLIP vs g" />,
+    );
+    const ref = container.querySelector('[data-mark="reference"]');
+    expect(ref).not.toBeNull();
+    expect(ref).toHaveTextContent("real photos 40.0");
+    // 40 is above every point, so the top y tick must reach it.
+    const svg = screen.getByRole("img", { name: "CLIP vs g" });
+    expect(within(svg).getByText("40")).toBeInTheDocument();
+    expect(container.querySelector("caption")).toHaveTextContent("real photos 40.0");
+  });
+
+  it("draws no reference line without the prop", () => {
+    const { container } = setup();
+    expect(container.querySelector('[data-mark="reference"]')).toBeNull();
+  });
+});

@@ -6,7 +6,12 @@ import { useLayoutEffect, useRef, useState, type RefObject } from "react";
  */
 export function useWidth<T extends HTMLElement = HTMLDivElement>(fallback = 640): [RefObject<T>, number] {
   const ref = useRef<T>(null);
-  const [width, setWidth] = useState(fallback);
+  // Never start wider than the window: a 640px first render on a phone widens the layout viewport.
+  const [width, setWidth] = useState(() =>
+    typeof window !== "undefined" && window.innerWidth > 0
+      ? Math.min(fallback, Math.max(240, window.innerWidth - 32))
+      : fallback,
+  );
   useLayoutEffect(() => {
     const el = ref.current;
     if (!el || typeof ResizeObserver === "undefined") return;

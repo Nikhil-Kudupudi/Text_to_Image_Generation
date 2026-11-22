@@ -77,3 +77,18 @@ describe("Lightbox", () => {
     expect(dialog.contains(document.activeElement)).toBe(true);
   });
 });
+
+describe("Lightbox actions", () => {
+  it("renders the actions slot in the dialog, inside the focus trap", async () => {
+    const onAct = vi.fn();
+    render(
+      <Lightbox items={items} index={1} onClose={() => {}} onIndex={() => {}}
+        actions={<button type="button" onClick={onAct}>Reuse</button>} />,
+    );
+    const dialog = screen.getByRole("dialog");
+    const btn = screen.getByRole("button", { name: "Reuse" });
+    expect(dialog).toContainElement(btn);
+    await userEvent.setup().click(btn);
+    expect(onAct).toHaveBeenCalledTimes(1);
+  });
+});

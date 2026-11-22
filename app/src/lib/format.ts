@@ -1,10 +1,16 @@
 const DASH = "—";
 
-const isNum = (v: number | null | undefined): v is number => typeof v === "number" && Number.isFinite(v);
+/** A real, finite number (not null, undefined, NaN or ±Infinity). */
+export const isNum = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v);
 
 /** Fixed-digit number, or an em dash for missing values. */
 export function fmt(v: number | null | undefined, digits = 2): string {
   return isNum(v) ? v.toFixed(digits) : DASH;
+}
+
+/** Gigabytes with a unit: 2.63 -> "2.6 GB". */
+export function fmtGb(v: number | null | undefined): string {
+  return isNum(v) ? `${v.toFixed(1)} GB` : DASH;
 }
 
 /** Seconds with a unit: 2.798 -> "2.8 s", 312.4 -> "312 s". */

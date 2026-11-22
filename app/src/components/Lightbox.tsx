@@ -1,4 +1,4 @@
-import { useEffect, useRef, type MouseEvent } from "react";
+import { useEffect, useRef, type MouseEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Icon } from "./Icon";
 
@@ -14,17 +14,20 @@ const FOCUSABLE = 'button:not([disabled]), [href], input, select, textarea, [tab
 /**
  * Full-screen viewer. Controlled: `index` null (or out of range) = closed.
  * Keys: ←/→ move (wrapping), Esc closes. Focus is trapped inside and restored on close.
+ * `actions`: optional controls for the current item, shown in the top bar (inside the focus trap).
  */
 export function Lightbox({
   items,
   index,
   onClose,
   onIndex,
+  actions,
 }: {
   items: LightboxItem[];
   index: number | null;
   onClose(): void;
   onIndex(i: number): void;
+  actions?: ReactNode;
 }) {
   const open = index !== null && index >= 0 && index < items.length;
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -98,6 +101,7 @@ export function Lightbox({
             {item.title && <div className="lightbox-title">{item.title}</div>}
             {item.meta && <div className="lightbox-meta">{item.meta}</div>}
           </div>
+          {actions != null && <div className="lightbox-actions">{actions}</div>}
           {n > 1 && (
             <span className="lightbox-count">
               {index + 1} / {n}

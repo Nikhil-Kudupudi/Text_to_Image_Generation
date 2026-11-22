@@ -122,6 +122,13 @@ describe("server with temp dirs", () => {
     expect(resolveFile(sources, "/results/m3/images/sd_tuned")).toBeNull();
     expect(resolveFile(sources, "/results/m2/x.png")).toBeNull();
     expect(resolveFile(sources, "/results/nope/x.png")).toBeNull();
+    // encoded backslashes, absolute paths, malformed escapes and NUL bytes never escape or throw
+    expect(resolveFile(sources, "/results/m3/..%5Csecret.txt")).toBeNull();
+    expect(resolveFile(sources, "/results/m3/..%5C..%5Csecret.txt")).toBeNull();
+    expect(resolveFile(sources, `/results/m3/${encodeURIComponent(path.join(tmp, "secret.txt"))}`)).toBeNull();
+    expect(() => resolveFile(sources, "/results/m3/%E0%A4%A")).not.toThrow();
+    expect(resolveFile(sources, "/results/m3/%E0%A4%A")).toBeNull();
+    expect(resolveFile(sources, "/results/m3/images/sd_tuned/000.png%00.jpg")).toBeNull();
   });
 
   it("loadSources picks the first existing candidate", () => {

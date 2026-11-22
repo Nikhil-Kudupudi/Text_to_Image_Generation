@@ -1,8 +1,24 @@
 // Pure selectors over M3Results for the Models page. Every one tolerates missing data.
-import type { M3Results, MetricRow, RenderRow } from "../../types";
+import type { M3Results, MetricRow, Prompt, RenderRow } from "../../types";
 import { configLabel, isModelConfig, MODEL_META } from "../../lib/configs";
+import { isNum } from "../../lib/format";
 
-const isNum = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v);
+
+/** Index-only prompts ("#idx", no real photo) for images whose prompts table is missing. */
+function indexPrompts(rows: RenderRow[]): Prompt[] {
+  const n = Math.max(0, ...rows.map((r) => r.images));
+  return Array.from({ length: n }, (_, idx) => ({ idx, image_id: -1, caption: `#${idx}`, image_512_path: "" }));
+}
+
+/**
+ * Images on disk but no m3_prompts*.csv (a partly copied run): still browse the images by index.
+ * Returns m3 unchanged when the prompt tables are there.
+ */
+export function withPromptFallback(m3: M3Results): M3Results {
+  const prompts = m3.prompts.length ? m3.prompts : indexPrompts(m3.models);
+  const promptsGuidance = m3.promptsGuidance.length ? m3.promptsGuidance : indexPrompts(m3.sweep);
+  return prompts === m3.prompts && promptsGuidance === m3.promptsGuidance ? m3 : { ...m3, prompts, promptsGuidance };
+}
 
 export function modelMetric(m3: M3Results, config: string): MetricRow | undefined {
   return m3.metrics.find((r) => r.config === config && r.group === "models");

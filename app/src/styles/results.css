@@ -214,7 +214,7 @@
 
 .plot-item .thumb {
   aspect-ratio: 4 / 3;
-  background: #ffffff; /* notebook PNGs are drawn on white */
+  background: var(--plot-paper); /* notebook PNGs are drawn on white */
 }
 
 .plot-item .thumb img {

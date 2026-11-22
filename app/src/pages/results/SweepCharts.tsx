@@ -66,10 +66,10 @@ export function SweepCharts({ m2 }: { m2: M2Results }) {
     <>
       <div className="results-grid">
         {guidance.length > 0 && (
-          <ChartCard title="CLIP vs guidance" aside={reference && <span className="pill">real photos {clip3(reference.value)}</span>}>
+          <ChartCard title="CLIP vs guidance">
             <LineChart
               points={guidance.map((r) => ({ x: r.guidance, y: clipOf(r), err: r.status === "ok" ? r.clip_score_std : null }))}
-              xLabel="guidance" yLabel="CLIP" better="higher" format={clip3} color={COLOR}
+              xLabel="guidance" yLabel="CLIP" better="higher" format={clip3} color={COLOR} reference={reference}
               ariaLabel="Earlier sweep: CLIP vs guidance"
             />
             <GridChips rows={guidance} grids={m2.grids} onOpen={openLabel} />

@@ -7,8 +7,9 @@ interface Node {
 }
 
 function buildTree(data: Manifest | null): Node[] {
-  const configs = data?.m3?.models.map((m) => ({ name: `${m.config}/`, note: `${m.images} png` })) ?? [];
-  const plots = data?.m3 ? `${data.m3.plots.length} png` : "—";
+  const m3 = data?.m3;
+  const configs = m3 ? [...m3.models, ...m3.sweep].map((m) => ({ name: `${m.config}/`, note: `${m.images} png` })) : [];
+  const plots = m3 ? `${m3.plots.length} png` : "—";
   return [
     {
       name: "outputs/milestone_3/",

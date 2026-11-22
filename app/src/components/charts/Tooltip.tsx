@@ -32,7 +32,7 @@ const box: CSSProperties = {
   fontSize: 12,
   lineHeight: 1.4,
   whiteSpace: "nowrap",
-  boxShadow: "0 4px 14px rgba(0, 0, 0, 0.18)",
+  boxShadow: "var(--shadow-m)",
 };
 
 /**

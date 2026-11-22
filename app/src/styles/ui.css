@@ -366,13 +366,20 @@ a:hover > .thumb img,
   font-variant-numeric: tabular-nums;
 }
 
-.lightbox .icon-button {
+.lightbox-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.lightbox .icon-button,
+.lightbox .button {
   background: var(--lightbox-control);
   border-color: var(--lightbox-control-border);
   color: var(--lightbox-text);
 }
 
-.lightbox .icon-button:hover {
+.lightbox .icon-button:hover,
+.lightbox .button:hover {
   background: var(--lightbox-control-hover);
 }
 

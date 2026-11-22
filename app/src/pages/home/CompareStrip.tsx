@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import type { M3Results, Prompt, RenderRow } from "../../types";
 import { EmptyState, Pill, Section, Segmented, SeriesDot } from "../../components/ui";
 import { Lightbox, type LightboxItem } from "../../components/Lightbox";
-import { configLabel, isModelConfig } from "../../lib/configs";
+import { configLabel, isModelConfig, REAL_CONFIG } from "../../lib/configs";
 import { fmt } from "../../lib/format";
 import { imageUrl, realUrl } from "../../lib/urls";
 import { clipAt, hasImage, shortLabel } from "./data";
@@ -27,12 +27,12 @@ interface Tile {
 
 /** clip.real is keyed by the main prompt list; only trust it when the photo matches. */
 function realClip(m3: M3Results, p: Prompt): number | null {
-  return m3.prompts[p.idx]?.image_id === p.image_id ? clipAt(m3, "real", p.idx) : null;
+  return m3.prompts[p.idx]?.image_id === p.image_id ? clipAt(m3, REAL_CONFIG, p.idx) : null;
 }
 
 function buildTiles(m3: M3Results, rows: RenderRow[], p: Prompt): Tile[] {
   const real: Tile = {
-    key: "real", config: null, src: realUrl(p), alt: "Real photo", chip: "Real", clip: realClip(m3, p), available: true,
+    key: "real", config: null, src: realUrl(p), alt: "Real photo", chip: "Real", clip: realClip(m3, p), available: p.image_512_path !== "",
   };
   return [
     real,

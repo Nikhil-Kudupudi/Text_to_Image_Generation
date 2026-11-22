@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { EmptyState } from "../components/ui";
 import { useResults } from "../lib/ManifestContext";
 import { BrowseGrid } from "./home/BrowseGrid";
 import { CompareStrip } from "./home/CompareStrip";
 import { ModelCards } from "./home/ModelCards";
 import { StatTiles } from "./home/StatTiles";
-import { winner } from "./home/data";
+import { winner, withPromptFallback } from "./home/data";
 import "../styles/home.css";
 
 function scrollToBrowse() {
@@ -17,7 +17,7 @@ function scrollToBrowse() {
 export default function HomePage() {
   const { data, loading } = useResults();
   const [picked, setPicked] = useState<string | null>(null);
-  const m3 = data?.m3 ?? null;
+  const m3 = useMemo(() => (data?.m3 ? withPromptFallback(data.m3) : null), [data]);
 
   if (!m3) {
     return (

@@ -70,6 +70,7 @@ export function PerformanceSection({ metrics }: { metrics: MetricRow[] }) {
                 <LineChart
                   points={guidance.map((r) => ({ x: r.guidance as number, y: m.value(r), err: m.err(r) }))}
                   xLabel="guidance" yLabel={m.key} better={m.better} format={m.format} color={GUIDANCE_COLOR}
+                  reference={referenceOf(metrics, "guidance", m)}
                   ariaLabel={`${m.key} vs guidance`}
                 />
               </ChartCard>

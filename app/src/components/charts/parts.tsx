@@ -15,7 +15,9 @@ const srOnly: CSSProperties = {
 /** The table-view twin of every chart: visually hidden, read by screen readers. */
 export function SrTable({ caption, head, rows }: { caption: string; head: string[]; rows: string[][] }) {
   return (
-    <table style={srOnly}>
+    // Tables ignore width: 1px, so the clipping box is a wrapper div.
+    <div style={srOnly}>
+    <table>
       <caption>{caption}</caption>
       <thead>
         <tr>
@@ -42,6 +44,7 @@ export function SrTable({ caption, head, rows }: { caption: string; head: string
         ))}
       </tbody>
     </table>
+    </div>
   );
 }
 

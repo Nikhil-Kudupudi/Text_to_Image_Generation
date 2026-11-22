@@ -136,7 +136,14 @@ export function buildManifest(sources) {
 
 // "/results/m3/images/sd_tuned/000.png" -> absolute file, refusing anything outside its source.
 export function resolveFile(sources, urlPath) {
-  const parts = decodeURIComponent(urlPath.split("?")[0]).replace(/^\/+/, "").split("/");
+  let decoded;
+  try {
+    decoded = decodeURIComponent(urlPath.split("?")[0]);
+  } catch {
+    return null; // malformed escape such as "%E0%A4%A"
+  }
+  if (decoded.includes("\0")) return null;
+  const parts = decoded.replace(/^\/+/, "").split("/");
   const [, key, ...rest] = parts;
   const root = sources[key];
   if (!root || !rest.length) return null;

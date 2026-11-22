@@ -54,3 +54,20 @@ describe("Workflow page", () => {
     expect(screen.getByTestId("count-plots")).toHaveTextContent("—");
   });
 });
+
+describe("Workflow page: data-driven stage text", () => {
+  it("describes the renders from the manifest (smoke run)", () => {
+    renderPage(fixtureManifest({ size: "smoke" }));
+    const stage = (id: string) => document.querySelector(`[data-stage="${id}"]`) as HTMLElement;
+    expect(stage("render-models")).toHaveTextContent("8 prompts, 5 models");
+    expect(stage("render-guidance")).toHaveTextContent("4 prompts, g = 1, 7.5");
+    expect(screen.getByText("sweep_g7.5/")).toBeInTheDocument();
+  });
+
+  it("describes the renders from the manifest (full run)", () => {
+    renderPage(fixtureManifest({ size: "full" }));
+    const stage = (id: string) => document.querySelector(`[data-stage="${id}"]`) as HTMLElement;
+    expect(stage("render-models")).toHaveTextContent("500 prompts, 5 models");
+    expect(stage("render-guidance")).toHaveTextContent("200 prompts, g = 1…15");
+  });
+});

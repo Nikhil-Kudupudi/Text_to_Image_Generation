@@ -1,10 +1,11 @@
 .sk, .sk-tree { font-family: var(--font-sketch); color: var(--text-1); }
-.sk { display: flex; flex-direction: column; align-items: center; gap: 0; max-width: 720px; margin: 0 auto; }
+/* One wide column of stages; the two stage-4 renders sit side by side. One column under 720px. */
+.sk { display: flex; flex-direction: column; align-items: center; gap: 0; width: 100%; max-width: 880px; margin: 0 auto; }
 .sk-box {
-  width: min(100%, 360px);
+  width: 100%;
   border: 1.5px dashed var(--border-strong);
   background: var(--surface);
-  padding: 12px 16px;
+  padding: 14px 20px;
   text-align: center;
   transition: transform 0.15s var(--ease), border-color 0.15s var(--ease);
 }
@@ -15,17 +16,27 @@
   font-size: 12px; padding: 0 8px; border-radius: 9px 6px 10px 7px;
   background: var(--accent-soft); color: var(--accent); border: 1px dashed var(--accent);
 }
-.sk-title { font-size: 19px; line-height: 1.2; }
-.sk-sub { font-size: 14px; color: var(--text-2); }
+.sk-title { font-size: 20px; line-height: 1.2; }
+.sk-sub { font-size: 15px; color: var(--text-2); }
 .sk-count { margin-top: 6px; font-size: 15px; color: var(--accent); }
 .sk-arrow { display: flex; flex-direction: column; align-items: center; color: var(--text-3); font-size: 13px; padding: 2px 0; }
-.sk-branch { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; justify-items: center; position: relative; }
-.sk-branch .sk-box { width: 100%; max-width: 340px; }
+.sk-branch { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; }
+.sk-branch .sk-box { width: 100%; }
+/* Folder tree: same width as the sketch, top-level folders side by side when there is room. */
 .sk-tree, .sk-tree ul { list-style: none; margin: 0; padding-left: 20px; border-left: 1.5px dashed var(--border-strong); }
-.sk-tree { border-left: 0; padding-left: 0; font-size: 16px; }
+.sk-tree {
+  border-left: 0; padding-left: 0; font-size: 16px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px 24px;
+  max-width: 880px; margin: 0 auto;
+}
 .sk-tree li { padding: 2px 0 2px 4px; }
 .sk-file { color: var(--text-1); }
 .sk-note { color: var(--text-3); font-size: 14px; }
+@media (prefers-reduced-motion: reduce) {
+  .sk-box { transition: none; }
+  .sk-box:hover { transform: none; }
+}
 @media (max-width: 720px) {
   .sk-branch { grid-template-columns: 1fr; gap: 12px; }
+  .sk-tree { grid-template-columns: 1fr; }
 }
