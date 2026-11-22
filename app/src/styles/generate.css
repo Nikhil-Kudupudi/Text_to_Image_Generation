@@ -1,0 +1,492 @@
+/* Generate page (pages/Generate.tsx, pages/generate/*). Tokens only, no raw colours. */
+
+.gen-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gen-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-3);
+}
+
+.gen-dot.is-on {
+  background: var(--ok);
+}
+
+.gen-dot.is-off {
+  background: var(--danger);
+  animation: gen-pulse 1.6s var(--ease) infinite;
+}
+
+@keyframes gen-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* ---- Offline card ---- */
+.gen-offline {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-color: var(--border-strong);
+}
+
+.gen-offline-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 14px;
+}
+
+.gen-offline-head .faint,
+.gen-offline-hint {
+  font-size: 12px;
+}
+
+.gen-command {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 4px 4px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  background: var(--surface-2);
+}
+
+.gen-command code {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  white-space: nowrap;
+  font-size: 13px;
+  color: var(--text-1);
+}
+
+/* ---- Layout ---- */
+.gen-layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 400px) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .gen-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---- Form ---- */
+.gen-form {
+  padding: 16px;
+}
+
+.gen-fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.gen-fieldset:disabled {
+  opacity: 0.6;
+}
+
+.gen-label {
+  display: block;
+  color: var(--text-2);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.gen-prompt {
+  width: 100%;
+  min-height: 112px;
+  height: auto;
+  padding: 10px 12px;
+  resize: vertical;
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.gen-chips {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: -6px;
+}
+
+.gen-chip {
+  max-width: 100%;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text-2);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: border-color 120ms var(--ease), color 120ms var(--ease), transform 80ms var(--ease);
+}
+
+.gen-chip:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  color: var(--text-1);
+}
+
+.gen-chip:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.gen-chip-more {
+  width: 26px;
+  height: 26px;
+}
+
+/* ---- Presets ---- */
+.gen-presets {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.gen-presets legend {
+  margin-bottom: 8px;
+  padding: 0;
+}
+
+.gen-preset-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.gen-preset {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 120ms var(--ease), background-color 120ms var(--ease), transform 80ms var(--ease);
+}
+
+.gen-preset:hover {
+  border-color: var(--border-strong);
+  color: var(--text-1);
+}
+
+.gen-preset:active {
+  transform: scale(0.98);
+}
+
+.gen-preset:has(:checked) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--text-1);
+}
+
+.gen-preset:has(:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.gen-preset-input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.gen-preset-meta {
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+/* ---- Advanced ---- */
+.gen-advanced summary {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.gen-advanced summary::-webkit-details-marker {
+  display: none;
+}
+
+.gen-advanced summary .gen-label::before {
+  content: "";
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-right: 6px;
+  border-left: 4px solid currentColor;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  transition: transform 120ms var(--ease);
+}
+
+.gen-advanced[open] summary .gen-label::before {
+  transform: rotate(90deg);
+}
+
+.gen-advanced summary .gen-label {
+  flex: none;
+}
+
+.gen-advanced-summary {
+  min-width: 0;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gen-advanced-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.gen-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.gen-field .input {
+  width: 100%;
+}
+
+.gen-field-seed {
+  grid-column: 1 / -1;
+}
+
+.gen-seed {
+  display: flex;
+  gap: 6px;
+}
+
+/* ---- Actions ---- */
+.gen-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.gen-submit {
+  height: 36px;
+  padding: 0 16px;
+  font-size: 14px;
+}
+
+.gen-kbd {
+  margin-left: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+.gen-note {
+  font-size: 12px;
+}
+
+.gen-error {
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-s);
+  color: var(--danger);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+/* ---- Result ---- */
+.gen-result {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  max-width: 640px;
+}
+
+.gen-frame {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-m);
+  background: var(--surface-2);
+}
+
+.gen-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: opacity 200ms var(--ease);
+}
+
+.gen-image.is-stale {
+  opacity: 0.35;
+}
+
+.gen-placeholder {
+  color: var(--text-3);
+}
+
+.gen-progress {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: var(--shadow-s);
+  font-size: 13px;
+}
+
+.gen-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border-strong);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: gen-spin 0.8s linear infinite;
+}
+
+@keyframes gen-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.gen-result-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.gen-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  margin: 0;
+}
+
+.gen-stats > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gen-stats dt {
+  color: var(--text-3);
+  font-size: 11px;
+}
+
+.gen-stats dd {
+  margin: 0;
+  color: var(--text-1);
+  font-size: 14px;
+}
+
+.gen-stat-preset {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ---- History ---- */
+.gen .section {
+  margin-top: 32px;
+}
+
+.gen-history {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  padding: 2px 2px 8px;
+  overflow-x: auto;
+  list-style: none;
+  scroll-snap-type: x proximity;
+}
+
+.gen-history-item {
+  position: relative;
+  flex: none;
+  width: 112px;
+  scroll-snap-align: start;
+}
+
+.gen-reuse {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 26px;
+  height: 26px;
+  opacity: 0;
+  box-shadow: var(--shadow-s);
+  transition: opacity 120ms var(--ease);
+}
+
+.gen-history-item:hover .gen-reuse,
+.gen-reuse:focus-visible {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .gen-reuse {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gen-dot.is-off,
+  .gen-spinner {
+    animation: none;
+  }
+}

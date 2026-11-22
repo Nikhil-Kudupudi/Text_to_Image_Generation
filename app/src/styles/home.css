@@ -1,0 +1,198 @@
+/* Models page (#/). Colours only through tokens. */
+/* Loaded before ui.css (imported via App), so overrides of kit classes carry an extra class. */
+
+.home-meta {
+  font-size: 13px;
+}
+
+.stats.home-stats {
+  margin-bottom: 40px;
+}
+
+/* ---- Model cards ---- */
+.model-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(176px, 1fr));
+  gap: 12px;
+}
+
+.card.model-card.is-selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), var(--shadow-s);
+}
+
+.model-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.model-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.model-card-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.model-card-win {
+  flex: none;
+  color: var(--text-3);
+}
+
+.model-card-spec {
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.model-card-nums {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 8px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.model-card-nums dt {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-3);
+}
+
+.model-card-nums dd {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---- Compare ---- */
+.prompt-picker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.prompt-picker-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.prompt-picker-count,
+.pager-count {
+  min-width: 64px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.prompt-picker-search {
+  flex: 1 1 200px;
+  max-width: 320px;
+}
+
+.compare-prompt {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.compare-prompt-idx {
+  flex: none;
+  font-size: 12px;
+}
+
+.compare-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.compare-tile {
+  position: relative;
+  min-width: 0;
+}
+
+.tile-chip,
+.tile-clip {
+  position: absolute;
+  pointer-events: none;
+}
+
+.tile-chip {
+  top: 6px;
+  left: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: calc(100% - 12px);
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-1);
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: var(--shadow-s);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tile-clip {
+  right: 6px;
+  bottom: 6px;
+}
+
+.tile-clip .pill {
+  background: var(--surface);
+  box-shadow: var(--shadow-s);
+}
+
+/* ---- Browse ---- */
+.pager {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 760px) {
+  .stats.home-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-bottom: 32px;
+  }
+
+  .compare-row {
+    grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+    gap: 8px;
+  }
+
+  .grid-thumbs.browse-grid {
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  }
+
+  .prompt-picker-search {
+    max-width: none;
+  }
+}
+
+.browse-toolbar {
+  display: flex;
+  min-width: 0;
+}
